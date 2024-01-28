@@ -35,7 +35,7 @@ template Houter
   <v-btn
   color="red"
     variant="text"
-    href="https://github.com/temagoult/temaplateHouter"
+    href="https://temaplate-houter.vercel.app/"
     target="_blank"
   >
  see more
