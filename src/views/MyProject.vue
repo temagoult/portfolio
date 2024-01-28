@@ -85,7 +85,7 @@ class="mx-auto !w-[100%]"
 >
 <v-img
   src="../assets/images/blog.png"
-height="175"
+
   cover
 ></v-img>
 
@@ -94,7 +94,8 @@ height="175"
 </v-card-title>
 
 <v-card-subtitle>
-  phd sudents blog(current project)
+  phd sudents blog(current project)<br>
+  connected with backend database using api
 </v-card-subtitle>
 
 <v-card-actions>
