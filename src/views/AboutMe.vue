@@ -21,9 +21,9 @@
 
     
 <div class="md:text-[25px] sm:text-[20px] text-[15px]">
-    i am Software engeener ,i hold a master degree in computer sience .
-    i gratuated from the university of Constantine2 
-    ,now iam working as FrontEnd developer with VUEJS language,<br>
+    I am Software engeener ,i hold a master degree in computer sience .
+    I gratuated from the university of Constantine2 
+    ,now iam working as FrontEnd developer with VUEJS framwork,<br>
     I’ve found my passion in web development. I love spending time coding and encountering new challenges.
      I’m highly adaptable to new challenges and projects
 
