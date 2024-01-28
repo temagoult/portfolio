@@ -68,7 +68,7 @@ class="mx-auto !w-[100%]"
   <v-btn
     color="red"
     variant="text"
-    href="https://github.com/temagoult/my-Agency-Template"
+    href="https://my-agency-template-ke5o.vercel.app/"
     target="_blank"
   >
  see more
