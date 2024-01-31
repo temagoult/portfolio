@@ -103,7 +103,7 @@ class="mx-auto !w-[100%]"
   color="red"
     variant="text"
    
-   href="https://github.com/temagoult/antropologycaProject"
+   href="https://antropologyca-project.vercel.app/"
    target="_blank"
 
   >
