@@ -103,7 +103,7 @@ class="mx-auto !w-[100%]"
   color="red"
     variant="text"
    
-   href="https://antropologyca-project.vercel.app/"
+   href="https://antropologyca.vercel.app/"
    target="_blank"
 
   >

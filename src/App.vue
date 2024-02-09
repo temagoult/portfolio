@@ -1,5 +1,5 @@
 <template>
-  <v-app class>
+  <v-app class ="!overflow-x-hidden">
 <NavBar></NavBar>
 <Content id="home"></Content>
 <About id="about"></About>
