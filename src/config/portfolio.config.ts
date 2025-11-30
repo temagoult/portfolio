@@ -18,7 +18,7 @@ export const profileData: Profile = {
   ],
   bio: 'Experienced Fullstack Developer with solid expertise in backend (.NET, C#) and modern frontend (Vue.js, TypeScript). Capable of designing, developing and maintaining complete applications, integrating systems, optimizing SQL databases and automating business workflows. Motivated, rigorous and solution-oriented, with excellent adaptability.',
   education: "Master's Degree in Computer Science - University of Constantine 2",
-  location: 'Batna, Algeria',
+  location: 'Algers , Algeria',
   phone: '0555545161 / 0791108304',
   email: 'mohamed.tamagoult@gmail.com',
   image: '../assets/images/photo.png',
@@ -46,46 +46,69 @@ export const profileData: Profile = {
 }
  
 export const experiencesData: Experience[] = [
+{
+  id: 'trust-bank',
+  company: 'Trust Bank',
+  position: 'Senior Development Officer (Fullstack)',
+  period: 'June 2025 - Present',
+  location: 'Algeria',
+  type: 'full-time',
+  description: 'Fullstack development and digital transformation of banking processes, including monétique systems, workflow automation and interoperability with financial partners.',
+  responsibilities: [
+    'Fullstack development in C#, .NET Core and REST APIs for internal banking applications',
+    'Participation in digitalization projects for TP/TPE services and customer operations',
+    'Development and maintenance of monétique solutions (cards, transactions, EMV flows, authorization logic)',
+    'Workflow design, automation and integration using Laserfiche (business processes, routing, validation circuits)',
+    'Technical and functional analysis of card processing and electronic payment system requirements',
+    'Optimization and modernization of exchange flows with SATIM, National Interbank Switch (NI) and external financial partners',
+    'Design, improvement and optimization of SQL Server stored procedures for large-scale data processing',
+    'Contribution to unit testing, integration testing, validation, and production deployment',
+    'Monitoring of application integrity, incident resolution and Level-2 technical support',
+    'Continuous performance monitoring and maintenance of critical banking applications'
+  ],
+  technologies: [
+    'C#',
+    '.NET Core',
+    'SQL Server',
+    'REST API',
+    'Laserfiche Workflow',
+    'Monétique',
+    'Banking Systems',
+    'SATIM Integration'
+  ],
+  current: true
+},
+
   {
-    id: 'trust-bank',
-    company: 'Trust Bank',
-    position: 'Senior Development Officer (Fullstack)',
-    period: 'June 2025 - Present',
-    location: 'Algeria',
-    type: 'full-time',
-    description: 'Fullstack development for banking digitalization projects',
-    responsibilities: [
-      'Fullstack development in C#/.NET with banking system integration',
-      'Participation in digitalization projects for TP/TPE services',
-      'Technical and functional analysis of card processing requirements',
-      'Improvement of exchange flows with SATIM, NI and external partners',
-      'Design and optimization of SQL Server procedures for mass processing',
-      'Participation in testing, validation and production deployment',
-      'Technical support and incident resolution',
-      'Daily monitoring of application functionality'
-    ],
-    technologies: ['C#', '.NET Core', 'SQL Server', 'API REST', 'Banking Systems'],
-    current: true
-  },
-  {
-    id: 'sigservice',
-    company: 'SIGSERVICE',
-    position: 'Frontend Developer',
-    period: 'September 2024 - juin 2025 ',
-    location: 'Algeria',
-    type: 'full-time',
-    description: 'Development of modern and performant interfaces',
-    responsibilities: [
-      'Frontend development with Vue.js, TypeScript and Tailwind',
-      'Reusable component creation and UI/UX optimization',
-      'REST API integration and performance optimization',
-      'Implementation of best practices: responsive design, clean architecture',
-      'Code reviews and bug fixing',
-      'CI/CD pipelines management via GitLab'
-    ],
-    technologies: ['Vue.js', 'TypeScript', 'Tailwind', 'REST API', 'GitLab CI/CD'],
-    current: false
-  },
+  id: 'sigservice',
+  company: 'SIGSERVICE',
+  position: 'Frontend Developer',
+  period: 'September 2024 - June 2025',
+  location: 'Algeria',
+  type: 'full-time',
+  description: 'Responsible for developing modern, scalable, and high-performance web and mobile interfaces.',
+  responsibilities: [
+    'Developed dynamic and scalable frontend interfaces using Vue.js, TypeScript, and Tailwind CSS',
+    'Designed and implemented reusable UI components with strong focus on UX optimization',
+    'Integrated and consumed REST APIs, ensuring efficient data handling and performance',
+    'Built the Presalio mobile application using Vue.js and Capacitor with WebView (hybrid mobile app development)',
+    'Optimized web-to-mobile rendering and navigation flow inside Capacitor WebView',
+    'Implemented responsive design best practices and clean architecture principles',
+    'Performed code reviews, debugging, and continuous improvements',
+    'Managed CI/CD pipelines through GitLab for automated build, test, and deployment'
+  ],
+  technologies: [
+    'Vue.js',
+    'TypeScript',
+    'Tailwind CSS',
+    'REST API',
+    'Capacitor',
+    'WebView',
+    'GitLab CI/CD'
+  ],
+  current: false
+}
+,
   {
     id: 'freelance',
     company: 'Freelance',
@@ -102,7 +125,7 @@ export const experiencesData: Experience[] = [
       'API integration and deployment',
       'Technical maintenance'
     ],
-    technologies: ['C#', '.NET', 'Vue.js', 'Node.js', 'SQL Server', 'Oracle', 'Laserfiche'],
+    technologies: ['C#', '.NET', 'Vue.js', 'Node.js', 'SQL Server', 'Oracle'],
     current: true
   }
 ]
@@ -152,7 +175,7 @@ export const projectsData: Project[] = [
   },
   {
     id: 'sigservice-app',
-    title: 'SIGSERVICE Web Application',
+    title: 'SIGSERVICE Web Application and mobile application',
     description: 'Modern web application with Vue.js and TypeScript.',
     image: '../assets/images/sigservice.png',
     url: '#',
@@ -192,9 +215,7 @@ export const projectsData: Project[] = [
   }
 ]
 
-/* ---------------------------------------------------
-   NAVIGATION
---------------------------------------------------- */
+
 export const navigationItems: NavigationItem[] = [
   { title: 'Home', id: 'home', icon: 'mdi-home' },
   { title: 'About', id: 'about', icon: 'mdi-account' },
@@ -204,9 +225,7 @@ export const navigationItems: NavigationItem[] = [
   { title: 'Contact', id: 'contact', icon: 'mdi-email' }
 ]
 
-/* ---------------------------------------------------
-   LANGUAGES
---------------------------------------------------- */
+
 export const languages = [
   { name: 'Arabic', level: 'Native', proficiency: 100 },
   { name: 'French', level: 'Advanced', proficiency: 85 },

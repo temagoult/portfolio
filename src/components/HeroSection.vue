@@ -72,6 +72,7 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
         <!-- Right Image -->
         <div class="hero-image">
           <div class="image-container">
+            <div class="image-border"></div>
             <img
               src="../assets/images/photo.png"
               :alt="profile.name"
@@ -131,6 +132,13 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
   border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+.social-link i {
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .social-link:hover {
   background: var(--hover-color);
   border-color: var(--hover-color);
@@ -141,6 +149,7 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
 .cta-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
@@ -150,6 +159,12 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.cta-button i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cta-button:hover {
@@ -169,6 +184,8 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
   max-width: 500px;
   aspect-ratio: 1;
   animation: float 6s ease-in-out infinite;
+  overflow: hidden;
+  border-radius: 50%;
 }
 
 .image-container::before {
@@ -183,15 +200,28 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
   filter: blur(20px);
 }
 
-.profile-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 20%;
-  border-radius: 50%;
+.image-border {
+  position: absolute;
+  inset: 0;
   border: 4px solid rgba(239, 68, 68, 0.3);
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
+
+.profile-img {
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+
+  /* Move cropping upward to focus on your face */
+  object-position: center 15%;
+
+  /* Remove or reduce the upward shift */
+  transform: translateY(-2%);
+}
+
 
 @keyframes blink {
   0%, 50% { opacity: 1; }
