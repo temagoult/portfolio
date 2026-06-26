@@ -36,7 +36,7 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
               Building clean Vue.js interfaces for real business products.
             </h1>
 
-            <div class="role-line hero-role-line">
+            <div class="role-line">
               <span class="role-muted">Specialized in</span>
               <span class="role-active">
                 {{ displayTitle }}<span class="cursor-blink">|</span>
@@ -323,14 +323,9 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
   flex-wrap: wrap;
   align-items: center;
   gap: 0.65rem;
-  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  margin-top: clamp(1rem, 2vw, 1.4rem);
+  font-size: clamp(1.08rem, 1.85vw, 1.45rem);
   font-weight: 850;
-}
-
-.hero-role-line {
-  margin-top: clamp(1rem, 2vw, 1.45rem);
-  max-width: 760px;
-  min-height: 2.1rem;
 }
 
 .role-muted {

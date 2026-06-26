@@ -8,4 +8,3 @@ export function useNavigation() {
 
   return { scrollToSection }
 }
-//

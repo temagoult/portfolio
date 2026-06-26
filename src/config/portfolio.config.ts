@@ -26,7 +26,7 @@ export const profileData: Profile = {
   email: 'mohamed.tamagoult@gmail.com',
   image: '../assets/images/photo.png',
   cvUrl: '/cv/Mohamed_Tamagoult_CV.pdf',
-  portfolioUrl: 'https://portfolio-mauve-eta-a85sllh1sg.vercel.app/#projects',
+  portfolioUrl: 'https://storied-rabanadas-3d9fc4.netlify.app/',
   socialLinks: [
     {
       platform: 'github',
