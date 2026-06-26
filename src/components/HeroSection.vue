@@ -11,9 +11,9 @@ const props = defineProps<Props>()
 
 const { currentText } = useTypewriter({
   texts: props.profile.titles,
-  typingSpeed: 100,
-  deletingSpeed: 50,
-  pauseDuration: 2000
+  typingSpeed: 92,
+  deletingSpeed: 42,
+  pauseDuration: 1700
 })
 
 const displayTitle = computed(() => currentText.value || props.profile.titles[0])
@@ -21,63 +21,94 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
 
 <template>
   <section id="home" class="hero-section">
+    <div class="hero-glow hero-glow-one"></div>
+    <div class="hero-glow hero-glow-two"></div>
     <div class="container">
-      <div class="grid md:grid-cols-2 gap-8 items-center min-h-screen py-20">
-        <!-- Left Content -->
-        <div class="hero-content space-y-6">
-          <div class="text-sm md:text-lg text-red-500 font-medium animate-fade-in">
-            Hi, my name is
-          </div>
-          
-          <h1 class="text-4xl md:text-6xl font-bold animate-slide-up">
-            {{ profile.name }}
-          </h1>
-          
-          <div class="text-2xl md:text-4xl font-semibold h-20 flex items-center">
-            <span class="text-gray-400">I am a</span>
-            <span class="ml-3 text-red-500 typewriter-text">
-              {{ displayTitle }}
-              <span class="cursor-blink">|</span>
-            </span>
+      <div class="hero-stack">
+        <div class="hero-top">
+          <div class="hero-content">
+            <div class="hero-eyebrow">
+              <span class="status-dot"></span>
+              Frontend-focused Software Engineer
+            </div>
+
+            <h1 class="hero-title">
+              Building clean Vue.js interfaces for real business products.
+            </h1>
+
+            <div class="role-line hero-role-line">
+              <span class="role-muted">Specialized in</span>
+              <span class="role-active">
+                {{ displayTitle }}<span class="cursor-blink">|</span>
+              </span>
+            </div>
           </div>
 
-          <!-- Social Links -->
-          <div class="flex gap-4 pt-4">
-            <a
-              v-for="social in profile.socialLinks"
-              :key="social.platform"
-              :href="social.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="social-link"
-              :style="{ '--hover-color': social.color }"
-              :aria-label="social.platform"
-            >
-              <i :class="`mdi ${social.icon}`" style="font-size: 32px;"></i>
-            </a>
-          </div>
-
-          <!-- CTA Button -->
-          <div class="pt-6">
-            <a
-              href="#projects"
-              class="cta-button"
-            >
-              View My Work
-              <i class="mdi mdi-arrow-right" style="font-size: 20px;"></i>
-            </a>
+          <div class="hero-visual" aria-hidden="true">
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="image-shell">
+                <img src="../assets/images/photo.png" :alt="profile.name" class="profile-img" />
+              </div>
+              <div class="profile-card-footer">
+                <div>
+                  <strong>{{ profile.name }}</strong>
+                  <span>{{ profile.title }}</span>
+                </div>
+                <div class="availability-pill">Ready</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Right Image -->
-        <div class="hero-image">
-          <div class="image-container">
-            <div class="image-border"></div>
-            <img
-              src="../assets/images/photo.png"
-              :alt="profile.name"
-              class="profile-img"
-            />
+        <div class="hero-bottom-panel">
+          <p class="hero-description">
+            {{ profile.bio }}
+          </p>
+
+          <div class="hero-bottom-row">
+            <div class="hero-actions" aria-label="Primary actions">
+              <a :href="profile.cvUrl" download class="cta-button primary">
+                <v-icon icon="mdi-file-download-outline" size="20" />
+                Download CV
+              </a>
+              <a :href="profile.cvUrl" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
+                <v-icon icon="mdi-eye-outline" size="20" />
+                View CV
+              </a>
+              <a href="#projects" class="cta-button ghost">
+                <v-icon icon="mdi-rocket-launch-outline" size="20" />
+                View Projects
+              </a>
+            </div>
+
+            <div class="hero-meta">
+              <div class="hero-tags" aria-label="Core frontend stack">
+                <span>Vue.js</span>
+                <span>TypeScript</span>
+                <span>UI/UX</span>
+                <span>REST APIs</span>
+              </div>
+
+              <div class="social-links" aria-label="Social links">
+                <a
+                  v-for="social in profile.socialLinks"
+                  :key="social.platform"
+                  :href="social.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-link"
+                  :style="{ '--hover-color': social.color }"
+                  :aria-label="social.platform"
+                >
+                  <v-icon :icon="social.icon" size="23" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -87,221 +118,424 @@ const displayTitle = computed(() => currentText.value || props.profile.titles[0]
 
 <style scoped>
 .hero-section {
-  background: #000000;
   position: relative;
-  overflow: hidden;
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
+  overflow: hidden;
+  padding: 7rem 0 4.6rem;
+  background:
+    linear-gradient(135deg, rgba(239, 68, 68, 0.12), transparent 28%),
+    radial-gradient(circle at 12% 22%, rgba(239, 68, 68, 0.1), transparent 22rem),
+    #050505;
 }
 
-.hero-section::before {
-  content: '';
+.hero-glow {
   position: absolute;
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 70%);
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  animation: pulse 4s ease-in-out infinite;
+  border-radius: 999px;
+  filter: blur(8px);
   pointer-events: none;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+.hero-glow-one {
+  width: 34rem;
+  height: 34rem;
+  top: 10%;
+  right: -10rem;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.16), transparent 68%);
+  animation: floatSoft 8s ease-in-out infinite;
+}
+
+.hero-glow-two {
+  width: 24rem;
+  height: 24rem;
+  left: -9rem;
+  bottom: 7rem;
+  background: radial-gradient(circle, rgba(127, 29, 29, 0.22), transparent 72%);
+  animation: floatSoft 9s ease-in-out infinite reverse;
+}
+
+.hero-stack {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.6rem, 3vw, 2.35rem);
+}
+
+.hero-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.86fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 4.6rem);
+}
+
+.hero-content {
+  animation: slideUp 0.7s ease-out both;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 999px;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.45rem;
+}
+
+.status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+}
+
+.hero-title {
+  font-size: clamp(2.9rem, 5.6vw, 5.45rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+  font-weight: 900;
+  color: white;
+  max-width: 710px;
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-top: 0;
+  animation: slideUp 0.8s ease-out 0.1s both;
+}
+
+.profile-card {
+  position: relative;
+  width: min(450px, 100%);
+  padding: 1rem;
+  border: 1px solid rgba(239, 68, 68, 0.24);
+  border-radius: 2rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.035));
+  box-shadow: var(--shadow-premium);
+  backdrop-filter: blur(18px);
+}
+
+.profile-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.5), transparent 38%, rgba(255, 255, 255, 0.08));
+  z-index: -1;
+}
+
+.profile-card-header {
+  display: flex;
+  gap: 0.42rem;
+  padding: 0.25rem 0.25rem 0.9rem;
+}
+
+.profile-card-header span {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.profile-card-header span:first-child {
+  background: #ef4444;
+}
+
+.image-shell {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border-radius: 1.5rem;
+  background: #111;
+}
+
+.profile-img {
   width: 100%;
+  height: 118%;
+  object-fit: cover;
+  object-position: center 15%;
+  transform: translateY(-2%);
+  filter: saturate(1.04) contrast(1.03);
+}
+
+.profile-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0.3rem 0.1rem;
+}
+
+.profile-card-footer strong,
+.profile-card-footer span {
+  display: block;
+}
+
+.profile-card-footer strong {
+  color: white;
+  font-size: 1.05rem;
+}
+
+.profile-card-footer span {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  margin-top: 0.15rem;
+}
+
+.availability-pill {
+  padding: 0.52rem 0.82rem;
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 999px;
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.08);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+
+
+.hero-bottom-panel {
+  width: 100%;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.6rem;
+  background:
+    linear-gradient(135deg, rgba(239, 68, 68, 0.12), transparent 38%),
+    rgba(255, 255, 255, 0.045);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(16px);
+  animation: slideUp 0.8s ease-out 0.2s both;
+}
+
+.role-line {
+  min-height: 2.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-weight: 850;
+}
+
+.hero-role-line {
+  margin-top: clamp(1rem, 2vw, 1.45rem);
+  max-width: 760px;
+  min-height: 2.1rem;
+}
+
+.role-muted {
+  color: #a1a1aa;
+}
+
+.role-active {
+  color: #ef4444;
 }
 
 .cursor-blink {
+  display: inline-block;
+  margin-left: 0.08rem;
   animation: blink 1s step-end infinite;
 }
 
-.social-link {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+.hero-description {
+  margin-top: 0;
+  max-width: none;
+  color: #d4d4d8;
+  line-height: 1.78;
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
 }
 
-.social-link i {
-  font-size: 32px;
+.hero-bottom-row {
+  margin-top: 1.45rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.2rem;
+  flex-wrap: wrap;
 }
 
-.social-link:hover {
-  background: var(--hover-color);
-  border-color: var(--hover-color);
-  transform: translateY(-4px) scale(1.1);
-  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
 }
 
 .cta-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  gap: 0.55rem;
+  min-height: 3.15rem;
+  padding: 0 1.18rem;
+  border-radius: 1rem;
+  font-weight: 850;
   text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, background 0.24s ease, border-color 0.24s ease;
 }
 
-.cta-button i {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cta-button.primary {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  box-shadow: 0 18px 38px rgba(239, 68, 68, 0.24);
+}
+
+.cta-button.secondary,
+.cta-button.ghost {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f4f4f5;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.cta-button.ghost {
+  background: transparent;
 }
 
 .cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px rgba(239, 68, 68, 0.28);
 }
 
-.hero-image {
+.cta-button.secondary:hover,
+.cta-button.ghost:hover {
+  background: rgba(239, 68, 68, 0.13);
+  border-color: rgba(239, 68, 68, 0.34);
+}
+
+.hero-meta {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.hero-tags span {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.social-link {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  border-radius: 0.9rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
 }
 
-.image-container {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  aspect-ratio: 1;
-  animation: float 6s ease-in-out infinite;
-  overflow: hidden;
-  border-radius: 50%;
+.social-link:hover {
+  background: var(--hover-color);
+  border-color: var(--hover-color);
+  transform: translateY(-4px);
 }
-
-.image-container::before {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
-  border-radius: 50%;
-  animation: rotate 8s linear infinite;
-  z-index: -1;
-  opacity: 0.5;
-  filter: blur(20px);
-}
-
-.image-border {
-  position: absolute;
-  inset: 0;
-  border: 4px solid rgba(239, 68, 68, 0.3);
-  border-radius: 50%;
-  z-index: 2;
-  pointer-events: none;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.profile-img {
-  width: 100%;
-  height: 120%;
-  object-fit: cover;
-
-  /* Move cropping upward to focus on your face */
-  object-position: center 15%;
-
-  /* Remove or reduce the upward shift */
-  transform: translateY(-2%);
-}
-
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-@keyframes pulse {
-  0%, 100% { 
-    transform: translateY(-50%) scale(1); 
-    opacity: 0.3; 
+  0%, 50% {
+    opacity: 1;
   }
-  50% { 
-    transform: translateY(-50%) scale(1.1); 
-    opacity: 0.5; 
+
+  51%, 100% {
+    opacity: 0;
   }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 1s ease-out;
-}
-
-.animate-slide-up {
-  animation: slideUp 1s ease-out 0.2s both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@media (max-width: 768px) {
-  .hero-section {
-    min-height: auto;
-    padding: 6rem 0 4rem;
+@keyframes floatSoft {
+  0%, 100% {
+    transform: translateY(0);
   }
 
-  .grid {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@media (max-width: 1040px) {
+  .hero-top {
     grid-template-columns: 1fr;
-    gap: 3rem;
   }
 
-  .hero-content h1 {
-    font-size: 2rem;
-  }
-  
-  .typewriter-text {
-    font-size: 1.5rem;
+  .hero-visual {
+    justify-content: center;
+    padding-top: 0;
   }
 
-  .image-container {
-    max-width: 300px;
+  .profile-card {
+    max-width: 380px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-section {
+    padding: 6.4rem 0 4rem;
   }
 
-  .hero-content {
-    order: 2;
+  .hero-title {
+    font-size: clamp(2.45rem, 13vw, 3.7rem);
   }
 
-  .hero-image {
-    order: 1;
+  .hero-bottom-row,
+  .hero-meta {
+    align-items: stretch;
+    justify-content: flex-start;
   }
+
+  .hero-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .cta-button {
+    width: 100%;
+  }
+
+  .hero-tags {
+    justify-content: flex-start;
+  }
+
 }
 </style>

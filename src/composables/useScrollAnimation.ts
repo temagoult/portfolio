@@ -1,7 +1,4 @@
-
-
-// src/composables/useScrollAnimation.ts
-import { ref, onMounted, onUnmounted, type Ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 export interface ScrollAnimationOptions {
   threshold?: number
@@ -17,8 +14,12 @@ export function useScrollAnimation(options: ScrollAnimationOptions = {}) {
   onMounted(() => {
     observer = new IntersectionObserver(
       ([entry]) => {
-        if(entry)
-        isVisible.value = entry.isIntersecting
+        if (entry?.isIntersecting) {
+          isVisible.value = true
+          if (elementRef.value && observer) {
+            observer.unobserve(elementRef.value)
+          }
+        }
       },
       { threshold, rootMargin }
     )
@@ -29,10 +30,7 @@ export function useScrollAnimation(options: ScrollAnimationOptions = {}) {
   })
 
   onUnmounted(() => {
-    if (observer && elementRef.value) {
-      observer.unobserve(elementRef.value)
-      observer.disconnect()
-    }
+    observer?.disconnect()
   })
 
   return { isVisible, elementRef }

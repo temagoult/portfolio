@@ -18,42 +18,50 @@ export function useTypewriter(options: TypewriterOptions) {
   const currentText = ref('')
   const currentIndex = ref(0)
   const isDeleting = ref(false)
-let timeout: number | null = null
+  let timeout: number | null = null
+
+  const schedule = (callback: () => void, delay: number) => {
+    timeout = window.setTimeout(callback, delay)
+  }
 
   const type = () => {
-    const fullText = texts[currentIndex.value]
-    
+    if (texts.length === 0) {
+      return
+    }
+
+    const fullText = texts[currentIndex.value] ?? ''
+
     if (isDeleting.value) {
-      currentText.value = fullText!.substring(0, currentText.value.length - 1)
-      
+      currentText.value = fullText.substring(0, currentText.value.length - 1)
+
       if (currentText.value === '') {
         isDeleting.value = false
         currentIndex.value = (currentIndex.value + 1) % texts.length
-        timeout = setTimeout(type, typingSpeed)
+        schedule(type, typingSpeed)
       } else {
-        timeout = setTimeout(type, deletingSpeed)
+        schedule(type, deletingSpeed)
       }
     } else {
-      currentText.value = fullText!.substring(0, currentText.value.length + 1)
-      
+      currentText.value = fullText.substring(0, currentText.value.length + 1)
+
       if (currentText.value === fullText) {
-        timeout = setTimeout(() => {
+        schedule(() => {
           isDeleting.value = true
           type()
         }, pauseDuration)
       } else {
-        timeout = setTimeout(type, typingSpeed)
+        schedule(type, typingSpeed)
       }
     }
   }
 
   onMounted(() => {
-    timeout = setTimeout(type, typingSpeed)
+    schedule(type, typingSpeed)
   })
 
   onUnmounted(() => {
     if (timeout) {
-      clearTimeout(timeout)
+      window.clearTimeout(timeout)
     }
   })
 

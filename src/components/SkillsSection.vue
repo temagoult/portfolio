@@ -1,79 +1,89 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useScrollAnimation } from '../composables/useScrollAnimation'
-import type { Skill } from '../types/skill'
+import type { Skill, SkillCategory } from '../types/skill'
 
 interface Props {
   skills: Skill[]
 }
 
 const props = defineProps<Props>()
-const { isVisible, elementRef } = useScrollAnimation({ threshold: 0.2 })
+const { isVisible, elementRef } = useScrollAnimation({ threshold: 0.16 })
 
-const groupedSkills = computed(() => {
-  const groups: Record<string, Skill[]> = {
-    frontend: [],
-    backend: [],
-    language: [],
-    framework: []
+const categoryOrder: SkillCategory[] = ['frontend', 'uiux', 'tools', 'backend', 'database']
+
+const categoryLabels: Record<SkillCategory, { title: string; subtitle: string; icon: string }> = {
+  frontend: {
+    title: 'Frontend Core',
+    subtitle: 'Technologies used to build modern, maintainable interfaces.',
+    icon: 'mdi-monitor-dashboard'
+  },
+  uiux: {
+    title: 'UI and Experience',
+    subtitle: 'Design-minded frontend practices for clear, responsive products.',
+    icon: 'mdi-palette-outline'
+  },
+  tools: {
+    title: 'Workflow and Integration',
+    subtitle: 'Build tools, version control and API integration practices.',
+    icon: 'mdi-tools'
+  },
+  backend: {
+    title: 'Backend Context',
+    subtitle: 'Useful backend knowledge for better collaboration and integration.',
+    icon: 'mdi-server'
+  },
+  database: {
+    title: 'Databases',
+    subtitle: 'Relational database and SQL workflow experience.',
+    icon: 'mdi-database'
   }
-  
-  props.skills.forEach(skill => {
-    groups[skill.category]?.push(skill)
-  })
-  
-  return groups
+}
+
+const skillGroups = computed(() => {
+  return categoryOrder
+    .map(category => ({
+      category,
+      ...categoryLabels[category],
+      skills: props.skills.filter(skill => skill.category === category)
+    }))
+    .filter(group => group.skills.length > 0)
 })
 </script>
 
 <template>
   <section id="skills" class="skills-section">
     <div class="container">
-      <!-- Section Title -->
       <div class="section-title">
-        <h2>Skills & Technologies</h2>
-        <div class="title-underline"></div>
-        <p class="subtitle">Technologies I work with</p>
+        <span class="section-kicker">Skills</span>
+        <h2>Skills and technologies</h2>
+        <p>Frontend technologies are placed first to reflect the position targeted by the portfolio.</p>
       </div>
 
-      <!-- Skills Grid -->
-      <div
-        ref="elementRef"
-        :class="['skills-grid', { 'is-visible': isVisible }]"
-      >
-        <div
-          v-for="(skill, index) in skills"
-          :key="skill.id"
-          class="skill-card"
-          :style="{ '--delay': `${index * 0.1}s` }"
+      <div ref="elementRef" :class="['skills-layout', { 'is-visible': isVisible }]">
+        <article
+          v-for="(group, index) in skillGroups"
+          :key="group.category"
+          :class="['skill-group-card', { featured: index === 0 }]"
+          :style="{ '--delay': `${index * 0.12}s` }"
         >
-          <div class="skill-icon">
-            <v-icon :icon="skill.icon" size="48" />
-          </div>
-          <h3 class="skill-name">{{ skill.name }}</h3>
-          
-          <!-- Optional Proficiency Bar -->
-          <div v-if="skill.proficiency" class="proficiency">
-            <div class="proficiency-bar">
-              <div 
-                class="proficiency-fill"
-                :style="{ width: `${skill.proficiency}%` }"
-              ></div>
+          <div class="group-header">
+            <div class="group-icon">
+              <v-icon :icon="group.icon" size="24" />
             </div>
-            <span class="proficiency-text">{{ skill.proficiency }}%</span>
+            <div>
+              <h3>{{ group.title }}</h3>
+              <p>{{ group.subtitle }}</p>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Category Badges (Optional) -->
-      <div class="categories">
-        <span
-          v-for="category in Object.keys(groupedSkills)"
-          :key="category"
-          class="category-badge"
-        >
-          {{ category.charAt(0).toUpperCase() + category.slice(1) }}
-        </span>
+          <div class="skill-list">
+            <span v-for="skill in group.skills" :key="skill.id" class="skill-pill">
+              <v-icon :icon="skill.icon" size="18" />
+              {{ skill.name }}
+            </span>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -81,148 +91,159 @@ const groupedSkills = computed(() => {
 
 <style scoped>
 .skills-section {
-  background: linear-gradient(180deg, #0a0a0a 0%, #1a0000 100%);
-  padding: 6rem 0;
   position: relative;
+  padding: var(--section-padding) 0;
   overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(239, 68, 68, 0.11), transparent 26rem),
+    linear-gradient(180deg, #0f0505 0%, #090909 100%);
 }
 
 .skills-section::before {
   content: '';
   position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
-  top: 50%;
-  right: -200px;
-  border-radius: 50%;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  right: -12rem;
+  top: 9rem;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.1), transparent 70%);
+  pointer-events: none;
 }
 
 .section-title {
+  position: relative;
+  max-width: 740px;
+  margin: 0 auto 3.6rem;
   text-align: center;
-  margin-bottom: 4rem;
+}
+
+.section-kicker {
+  display: inline-flex;
+  margin-bottom: 0.85rem;
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  font-weight: 800;
+  font-size: 0.82rem;
 }
 
 .section-title h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #ef4444;
-  margin-bottom: 1rem;
+  color: white;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  font-weight: 900;
 }
 
-.title-underline {
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #ef4444, transparent);
-  margin: 0 auto 1rem;
-  border-radius: 2px;
+.section-title p {
+  margin-top: 1rem;
+  color: #a1a1aa;
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
-.subtitle {
-  color: #9ca3af;
-  font-size: 1.125rem;
-}
-
-.skills-grid {
+.skills-layout {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
 }
 
-.skill-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 2px solid rgba(239, 68, 68, 0.2);
-  border-radius: 1rem;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  transition: all 0.3s ease;
+.skill-group-card {
+  padding: 1.35rem;
+  border-radius: 1.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.028));
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(28px);
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 
-.skills-grid.is-visible .skill-card {
-  animation: slideUpFade 0.6s ease-out forwards;
+.skill-group-card.featured {
+  grid-column: span 2;
+  border-color: rgba(239, 68, 68, 0.28);
+  background:
+    radial-gradient(circle at top right, rgba(239, 68, 68, 0.16), transparent 20rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.03));
+}
+
+.skills-layout.is-visible .skill-group-card {
+  animation: slideUpFade 0.55s ease-out forwards;
   animation-delay: var(--delay);
 }
 
-.skill-card:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: #ef4444;
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.3);
+.skill-group-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(239, 68, 68, 0.32);
+  background: rgba(239, 68, 68, 0.08);
 }
 
-.skill-icon {
-  margin-bottom: 1rem;
+.group-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.95rem;
+  margin-bottom: 1.15rem;
+}
+
+.group-icon {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
   color: #ef4444;
-  transition: transform 0.3s ease;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.skill-card:hover .skill-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.skill-name {
-  font-size: 1.125rem;
-  font-weight: 600;
+.group-header h3 {
   color: white;
-  margin-bottom: 0.75rem;
+  font-size: 1.22rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.25rem;
 }
 
-.proficiency {
-  margin-top: 1rem;
+.group-header p {
+  color: #a1a1aa;
+  line-height: 1.55;
+  font-size: 0.95rem;
 }
 
-.proficiency-bar {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
-}
-
-.proficiency-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #ef4444, #dc2626);
-  border-radius: 3px;
-  transition: width 1s ease-out 0.5s;
-}
-
-.proficiency-text {
-  font-size: 0.875rem;
-  color: #9ca3af;
-}
-
-.categories {
+.skill-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 3rem;
+  gap: 0.65rem;
 }
 
-.category-badge {
-  padding: 0.5rem 1.5rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 2rem;
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.56rem 0.75rem;
+  border-radius: 999px;
+  color: #f4f4f5;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 800;
+  font-size: 0.88rem;
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.skill-pill .v-icon {
   color: #ef4444;
-  font-weight: 600;
-  font-size: 0.875rem;
-  transition: all 0.3s ease;
 }
 
-.category-badge:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: #ef4444;
+.skill-pill:hover {
   transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.12);
 }
 
 @keyframes slideUpFade {
@@ -232,30 +253,28 @@ const groupedSkills = computed(() => {
   }
 }
 
-@media (max-width: 768px) {
-  .skills-section {
-    padding: 4rem 0;
+@media (max-width: 860px) {
+  .skills-layout {
+    grid-template-columns: 1fr;
   }
 
-  .section-title h2 {
-    font-size: 2rem;
+  .skill-group-card.featured {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .section-title {
+    text-align: left;
+    margin-bottom: 2.4rem;
   }
 
-  .skills-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
+  .skill-group-card {
+    padding: 1rem;
   }
 
-  .skill-card {
-    padding: 1.5rem 1rem;
-  }
-
-  .skill-icon {
-    font-size: 2rem;
-  }
-
-  .skill-name {
-    font-size: 1rem;
+  .group-header {
+    flex-direction: column;
   }
 }
 </style>

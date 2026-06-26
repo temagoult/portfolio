@@ -11,34 +11,30 @@ import ContactSection from './components/ContactSection.vue'
 
 <template>
   <v-app>
-  
-    <NavBar :items="navigationItems" :title="profileData.name" />
-
-  
+    <NavBar :items="navigationItems" :title="profileData.name" :cv-url="profileData.cvUrl" />
     <v-main>
- 
       <HeroSection :profile="profileData" />
-
-    
       <AboutSection :profile="profileData" />
-
-    
       <ExperienceSection :experiences="experiencesData" />
-
       <SkillsSection :skills="skillsData" />
-
       <ProjectsSection :projects="projectsData" />
-
-
       <ContactSection :profile="profileData" />
-
-
       <footer class="footer">
         <div class="footer-content">
-          <p class="footer-text">
-            © {{ new Date().getFullYear() }} {{ profileData.name }}. All rights reserved.
-          </p>
+          <div>
+            <p class="footer-name">{{ profileData.name }}</p>
+            <p class="footer-text">Frontend-focused Software Engineer</p>
+          </div>
           <div class="footer-links">
+            <a
+              :href="profileData.cvUrl"
+              download
+              class="footer-link footer-link-wide"
+              aria-label="Download CV"
+            >
+              <v-icon icon="mdi-file-download-outline" size="18" />
+              CV
+            </a>
             <a
               v-for="social in profileData.socialLinks"
               :key="social.platform"
@@ -46,6 +42,7 @@ import ContactSection from './components/ContactSection.vue'
               target="_blank"
               rel="noopener noreferrer"
               class="footer-link"
+              :aria-label="social.platform"
             >
               <v-icon :icon="social.icon" size="20" />
             </a>
@@ -57,7 +54,23 @@ import ContactSection from './components/ContactSection.vue'
 </template>
 
 <style>
-/* Global Styles */
+:root {
+  --color-bg: #050505;
+  --color-bg-soft: #0b0b0d;
+  --color-surface: rgba(255, 255, 255, 0.045);
+  --color-surface-strong: rgba(255, 255, 255, 0.075);
+  --color-primary: #ef4444;
+  --color-primary-dark: #dc2626;
+  --color-text: #ffffff;
+  --color-muted: #a1a1aa;
+  --color-border: rgba(239, 68, 68, 0.22);
+  --color-border-accent: rgba(239, 68, 68, 0.32);
+  --container-width: 1180px;
+  --section-padding: 6.5rem;
+  --shadow-premium: 0 24px 80px rgba(0, 0, 0, 0.42);
+  --shadow-accent: 0 18px 48px rgba(239, 68, 68, 0.24);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -66,128 +79,174 @@ import ContactSection from './components/ContactSection.vue'
 
 html {
   scroll-behavior: smooth;
+  background: var(--color-bg);
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000000;
+  background:
+    radial-gradient(circle at top right, rgba(239, 68, 68, 0.12), transparent 30rem),
+    radial-gradient(circle at bottom left, rgba(239, 68, 68, 0.08), transparent 28rem),
+    var(--color-bg);
+  color: var(--color-text);
+}
+
+body::selection {
+  background: rgba(239, 68, 68, 0.32);
   color: white;
 }
 
-/* Custom Scrollbar */
+button,
+a,
+input,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(239, 68, 68, 0.55);
+  outline-offset: 4px;
+}
+
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #050505;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-  border-radius: 6px;
+  background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
+  background: linear-gradient(180deg, #f87171 0%, #dc2626 100%);
 }
 
-/* Selection */
-::selection {
-  background: rgba(239, 68, 68, 0.3);
-  color: white;
-}
-
-::-moz-selection {
-  background: rgba(239, 68, 68, 0.3);
-  color: white;
-}
-
-/* Vuetify Overrides */
 .v-application {
-  background: #000000 !important;
+  background: transparent !important;
 }
 
 .v-main {
   padding-top: 0 !important;
+  animation: fadeIn 0.45s ease-out;
 }
 
-/* Footer */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
 .footer {
-  background: #000000;
-  border-top: 1px solid rgba(239, 68, 68, 0.2);
-  padding: 2rem 0;
+  background: rgba(0, 0, 0, 0.88);
+  border-top: 1px solid var(--color-border);
+  padding: 2.2rem 0;
 }
 
 .footer-content {
-  max-width: 1200px;
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.footer-name {
+  color: white;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .footer-text {
-  color: #9ca3af;
-  font-size: 0.875rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
 }
 
 .footer-links {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .footer-link {
-  width: 40px;
-  height: 40px;
-  display: flex;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
-  color: #9ca3af;
+  gap: 0.45rem;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 0.85rem;
+  color: #d4d4d8;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.footer-link-wide {
+  width: auto;
+  padding: 0 0.9rem;
+  font-weight: 700;
+  font-size: 0.86rem;
 }
 
 .footer-link:hover {
-  background: #ef4444;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: white;
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
-@media (max-width: 640px) {
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* Utility Classes */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* Loading Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
-.v-main {
-  animation: fadeIn 0.5s ease-out;
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 4.5rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 </style>

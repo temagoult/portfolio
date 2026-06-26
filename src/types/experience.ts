@@ -1,10 +1,13 @@
+export type ExperienceType = 'full-time' | 'remote' | 'contract' | 'internship'
+
 export interface Experience {
   id: string
   company: string
   position: string
   period: string
   location: string
-  type: 'full-time' | 'freelance' | 'contract' | 'internship'
+  type: ExperienceType
+  companyUrl?: string
   description: string
   responsibilities: string[]
   technologies: string[]
@@ -27,18 +30,13 @@ export const filterExperiencesByType = (
   experiences: Experience[],
   type: Experience['type']
 ): Experience[] => {
-  return experiences.filter(exp => exp.type === type)
+  return experiences.filter(experience => experience.type === type)
 }
 
 export const getAllTechnologies = (experiences: Experience[]): string[] => {
   const techSet = new Set<string>()
-  experiences.forEach(exp => {
-    exp.technologies.forEach(tech => techSet.add(tech))
+  experiences.forEach(experience => {
+    experience.technologies.forEach(technology => techSet.add(technology))
   })
   return Array.from(techSet).sort()
-}
-
-export const calculateTotalYears = (experiences: Experience[]): number => {
-  const fullTimeExperiences = experiences.filter(exp => exp.type === 'full-time')
-  return fullTimeExperiences.length * 0.5
 }

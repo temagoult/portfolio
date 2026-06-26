@@ -1,28 +1,32 @@
-// src/config/portfolio.config.ts
 import type { Profile } from '../types/profile'
 import type { Skill } from '../types/skill'
 import type { Project } from '../types/project'
 import type { NavigationItem } from '../types/navigation'
 import type { Experience } from '../types/experience'
-
+import bankingImage from '../assets/images/banking.svg'
+import sigserviceImage from '../assets/images/sigservice.svg'
+import mailstoneImage from '../assets/images/mailstone.svg'
+import houterImage from '../assets/images/one.png'
+import dreamAgencyImage from '../assets/images/recentWork.png'
+import antropologicaImage from '../assets/images/blog.png'
 
 export const profileData: Profile = {
   name: 'Mohamed Tamagoult',
-  title: 'Fullstack Developer',
+  title: 'Software Engineer',
   titles: [
-    'Fullstack Developer',
     'Frontend Developer',
-    'Backend Developer',
-    '.NET Developer',
-    'Vue.js Specialist'
+    'Vue.js Developer',
+    'TypeScript Developer',
+    'UI-focused Web Developer'
   ],
-  bio: 'Experienced Fullstack Developer with solid expertise in backend (.NET, C#) and modern frontend (Vue.js, TypeScript). Capable of designing, developing and maintaining complete applications, integrating systems, optimizing SQL databases and automating business workflows. Motivated, rigorous and solution-oriented, with excellent adaptability.',
-  education: "Master's Degree in Computer Science - University of Constantine 2",
-  location: 'Algers , Algeria',
-  phone: '0555545161 / 0791108304',
+  bio: 'Software engineer focused on building clean, responsive and maintainable web interfaces. I work mainly with Vue.js, TypeScript, REST APIs and modern UI systems, with additional experience in business applications, banking environments and SQL-based workflows.',
+  education: "Master's Degree in Software Engineering - University Constantine 2",
+  location: 'Algiers, Algeria',
+  phone: '0555 54 51 61 / 0791 10 83 04',
   email: 'mohamed.tamagoult@gmail.com',
   image: '../assets/images/photo.png',
-
+  cvUrl: '/cv/Mohamed_Tamagoult_CV.pdf',
+  portfolioUrl: 'https://portfolio-mauve-eta-a85sllh1sg.vercel.app/#projects',
   socialLinks: [
     {
       platform: 'github',
@@ -44,150 +48,143 @@ export const profileData: Profile = {
     }
   ]
 }
- 
-export const experiencesData: Experience[] = [
-{
-  id: 'trust-bank',
-  company: 'Trust Bank',
-  position: 'Senior Development Officer (Fullstack)',
-  period: 'June 2025 - Present',
-  location: 'Algeria',
-  type: 'full-time',
-  description: 'Fullstack development and digital transformation of banking processes, including monétique systems, workflow automation and interoperability with financial partners.',
-  responsibilities: [
-    'Fullstack development in C#, .NET Core and REST APIs for internal banking applications',
-    'Participation in digitalization projects for TP/TPE services and customer operations',
-    'Development and maintenance of monétique solutions (cards, transactions, EMV flows, authorization logic)',
-    'Workflow design, automation and integration using Laserfiche (business processes, routing, validation circuits)',
-    'Technical and functional analysis of card processing and electronic payment system requirements',
-    'Optimization and modernization of exchange flows with SATIM, National Interbank Switch (NI) and external financial partners',
-    'Design, improvement and optimization of SQL Server stored procedures for large-scale data processing',
-    'Contribution to unit testing, integration testing, validation, and production deployment',
-    'Monitoring of application integrity, incident resolution and Level-2 technical support',
-    'Continuous performance monitoring and maintenance of critical banking applications'
-  ],
-  technologies: [
-    'C#',
-    '.NET Core',
-    'SQL Server',
-    'REST API',
-    'Laserfiche Workflow',
-    'Monétique',
-    'Banking Systems',
-    'SATIM Integration'
-  ],
-  current: true
-},
 
+export const experiencesData: Experience[] = [
   {
-  id: 'sigservice',
-  company: 'SIGSERVICE',
-  position: 'Frontend Developer',
-  period: 'September 2024 - June 2025',
-  location: 'Algeria',
-  type: 'full-time',
-  description: 'Responsible for developing modern, scalable, and high-performance web and mobile interfaces.',
-  responsibilities: [
-    'Developed dynamic and scalable frontend interfaces using Vue.js, TypeScript, and Tailwind CSS',
-    'Designed and implemented reusable UI components with strong focus on UX optimization',
-    'Integrated and consumed REST APIs, ensuring efficient data handling and performance',
-    'Built the Presalio mobile application using Vue.js and Capacitor with WebView (hybrid mobile app development)',
-    'Optimized web-to-mobile rendering and navigation flow inside Capacitor WebView',
-    'Implemented responsive design best practices and clean architecture principles',
-    'Performed code reviews, debugging, and continuous improvements',
-    'Managed CI/CD pipelines through GitLab for automated build, test, and deployment'
-  ],
-  technologies: [
-    'Vue.js',
-    'TypeScript',
-    'Tailwind CSS',
-    'REST API',
-    'Capacitor',
-    'WebView',
-    'GitLab CI/CD'
-  ],
-  current: false
-}
-,
-  {
-    id: 'freelance',
-    company: 'Freelance',
-    position: 'Fullstack Developer',
-    period: '2020 - Present',
+    id: 'mailstone',
+    company: 'Mailstone',
+    position: 'Frontend Developer',
+    period: 'Remote project',
     location: 'Remote',
-    type: 'freelance',
-    description: 'Development of complete web solutions',
+    type: 'remote',
+    companyUrl: 'https://www.mailstone.io/',
+    description: 'Frontend contribution on a client-facing SaaS web application, with focus on interface quality, responsive screens and stable client-side workflows.',
     responsibilities: [
-      'Full websites (frontend + backend)',
-      'Development in C#/.NET, Node.js, Vue.js',
-      'Database design and optimization (SQL Server, Oracle)',
-      'Workflow automation with Laserfiche Workflow',
-      'API integration and deployment',
-      'Technical maintenance'
+      'Contributed to client-facing frontend features using modern web technologies',
+      'Improved UI details, component consistency and visual quality across screens',
+      'Participated in bug fixing, interface refinements and client-side workflow improvements',
+      'Integrated API-driven data flows and supported smooth user interactions',
+      'Collaborated on a SaaS product with attention to usability, stability and maintainability'
     ],
-    technologies: ['C#', '.NET', 'Vue.js', 'Node.js', 'SQL Server', 'Oracle'],
+    technologies: ['Vue.js', 'TypeScript', 'REST APIs', 'UI/UX', 'Responsive Design'],
+    current: false
+  },
+  {
+    id: 'trust-bank',
+    company: 'Trust Bank',
+    position: 'Senior Development Delegate / Web Developer',
+    period: 'June 2025 - Present',
+    location: 'Algeria',
+    type: 'full-time',
+    description: 'Development and evolution of business applications in a banking environment, with support for digitalization, application maintenance and SQL process optimization.',
+    responsibilities: [
+      'Contribute to the development and maintenance of internal business applications',
+      'Participate in digitalization initiatives and electronic payment service improvements',
+      'Analyze business needs, coordinate with stakeholders and support implementation phases',
+      'Provide technical support, application maintenance and operational SQL optimization'
+    ],
+    technologies: ['C#', '.NET Core', 'SQL Server', 'REST APIs', 'Application Support'],
+    current: true
+  },
+  {
+    id: 'sigservice',
+    company: 'SIGSERVICE',
+    position: 'Frontend Developer',
+    period: 'September 2024 - Present',
+    location: 'Algeria',
+    type: 'full-time',
+    description: 'Development of web interfaces with Vue.js, TypeScript and Tailwind CSS, with focus on reusable components, API integration and responsive user experience.',
+    responsibilities: [
+      'Develop web interfaces using Vue.js, TypeScript and Tailwind CSS',
+      'Create reusable components and progressively improve user experience',
+      'Integrate REST APIs and structure client-side data management',
+      'Participate in code reviews, debugging and CI/CD pipeline configuration'
+    ],
+    technologies: ['Vue.js', 'TypeScript', 'Tailwind CSS', 'REST APIs', 'GitLab CI/CD'],
+    current: true
+  },
+  {
+    id: 'originova',
+    company: 'Originova',
+    position: 'Web Developer',
+    period: 'Since 2020',
+    location: 'Remote',
+    type: 'remote',
+    description: 'Remote and client project delivery for websites, internal tools and business applications adapted to client needs.',
+    responsibilities: [
+      'Designed and delivered websites, internal applications and tools adapted to client needs',
+      'Developed web features with Vue.js, C#/.NET, Node.js and REST APIs depending on project scope',
+      'Modeled databases, optimized queries and structured data for management applications',
+      'Performed maintenance, bug fixing, API integration and user support after delivery'
+    ],
+    technologies: ['Vue.js', 'C#', '.NET', 'Node.js', 'SQL Server', 'REST APIs'],
     current: true
   }
 ]
 
-
 export const skillsData: Skill[] = [
-  // Backend
-  { id: 'csharp', name: 'C#', icon: 'mdi-language-csharp', category: 'backend', proficiency: 90 },
-  { id: 'dotnet', name: '.NET Core', icon: 'mdi-microsoft', category: 'backend', proficiency: 90 },
-  { id: 'entity-framework', name: 'Entity Framework', icon: 'mdi-database', category: 'backend', proficiency: 85 },
-  { id: 'api-rest', name: 'API REST', icon: 'mdi-api', category: 'backend', proficiency: 90 },
-
-  // Frontend
-  { id: 'vue', name: 'Vue.js', icon: 'mdi-vuejs', category: 'frontend', proficiency: 95 },
-  { id: 'typescript', name: 'TypeScript', icon: 'mdi-language-typescript', category: 'frontend', proficiency: 90 },
-  { id: 'javascript', name: 'JavaScript', icon: 'mdi-language-javascript', category: 'frontend', proficiency: 95 },
-  { id: 'tailwind', name: 'Tailwind CSS', icon: 'mdi-wind-turbine', category: 'frontend', proficiency: 90 },
-  { id: 'vuetify', name: 'Vuetify', icon: 'mdi-vuejs', category: 'frontend', proficiency: 85 },
-  { id: 'html', name: 'HTML5', icon: 'mdi-language-html5', category: 'frontend', proficiency: 95 },
-  { id: 'css', name: 'CSS3', icon: 'mdi-language-css3', category: 'frontend', proficiency: 90 },
-
-  // Databases
-  { id: 'sql-server', name: 'SQL Server', icon: 'mdi-database', category: 'backend', proficiency: 90 },
-  { id: 'oracle', name: 'Oracle PL/SQL', icon: 'mdi-database', category: 'backend', proficiency: 80 },
-
-  // DevOps & Tools
-  { id: 'git', name: 'Git', icon: 'mdi-git', category: 'framework', proficiency: 90 },
-  { id: 'gitlab', name: 'GitLab CI/CD', icon: 'mdi-gitlab', category: 'framework', proficiency: 85 },
-  { id: 'github', name: 'GitHub', icon: 'mdi-github', category: 'framework', proficiency: 90 },
-
-  // Other
-  { id: 'laserfiche', name: 'Laserfiche Workflow', icon: 'mdi-cog-sync', category: 'framework', proficiency: 75 },
-  { id: 'excel', name: 'Excel VBA', icon: 'mdi-file-excel', category: 'framework', proficiency: 85 }
+  { id: 'vue', name: 'Vue.js', icon: 'mdi-vuejs', category: 'frontend' },
+  { id: 'typescript', name: 'TypeScript', icon: 'mdi-language-typescript', category: 'frontend' },
+  { id: 'javascript', name: 'JavaScript', icon: 'mdi-language-javascript', category: 'frontend' },
+  { id: 'html', name: 'HTML5', icon: 'mdi-language-html5', category: 'frontend' },
+  { id: 'css', name: 'CSS3 / SCSS', icon: 'mdi-language-css3', category: 'frontend' },
+  { id: 'responsive', name: 'Responsive Design', icon: 'mdi-responsive', category: 'uiux' },
+  { id: 'uiux', name: 'UI/UX', icon: 'mdi-palette-outline', category: 'uiux' },
+  { id: 'vite', name: 'Vite', icon: 'mdi-lightning-bolt', category: 'tools' },
+  { id: 'vue-router', name: 'Vue Router', icon: 'mdi-routes', category: 'tools' },
+  { id: 'vuetify', name: 'Vuetify', icon: 'mdi-vuetify', category: 'frontend' },
+  { id: 'tailwind', name: 'Tailwind CSS', icon: 'mdi-tailwind', category: 'frontend' },
+  { id: 'rest-api', name: 'REST APIs', icon: 'mdi-api', category: 'tools' },
+  { id: 'git', name: 'Git', icon: 'mdi-git', category: 'tools' },
+  { id: 'gitlab', name: 'GitLab CI/CD', icon: 'mdi-gitlab', category: 'tools' },
+  { id: 'github', name: 'GitHub', icon: 'mdi-github', category: 'tools' },
+  { id: 'csharp', name: 'C#', icon: 'mdi-language-csharp', category: 'backend' },
+  { id: 'dotnet', name: '.NET Core', icon: 'mdi-microsoft', category: 'backend' },
+  { id: 'sql-server', name: 'SQL Server', icon: 'mdi-database', category: 'database' },
+  { id: 'oracle', name: 'Oracle PL/SQL', icon: 'mdi-database-outline', category: 'database' },
+  { id: 'excel', name: 'Excel VBA', icon: 'mdi-file-excel', category: 'tools' }
 ]
-
 
 export const projectsData: Project[] = [
   {
+    id: 'mailstone-saas',
+    title: 'Mailstone SaaS Website',
+    role: 'Frontend contribution',
+    description: 'A modern SaaS-oriented web product where I contributed to frontend interface quality, UX refinements, responsive behavior and client-side workflow improvements.',
+    image: mailstoneImage,
+    url: 'https://www.mailstone.io/',
+    technologies: ['Vue.js', 'TypeScript', 'UI/UX', 'Responsive Design', 'REST APIs'],
+    featured: true,
+    category: 'professional'
+  },
+  {
     id: 'trust-bank-digitalization',
-    title: 'Banking Digitalization Platform',
-    description: 'Fullstack development of banking services digitalization platform.',
-    image: '../assets/images/banking.png',
+    title: 'Banking Business Applications',
+    role: 'Web development and support',
+    description: 'Internal banking application work focused on business workflows, application support, API integration and SQL process optimization.',
+    image: bankingImage,
     url: '#',
-    technologies: ['C#', '.NET Core', 'SQL Server', 'API REST', 'Banking Integration'],
+    technologies: ['C#', '.NET Core', 'SQL Server', 'REST APIs'],
     featured: true,
     category: 'professional'
   },
   {
     id: 'sigservice-app',
-    title: 'SIGSERVICE Web Application and mobile application',
-    description: 'Modern web application with Vue.js and TypeScript.',
-    image: '../assets/images/sigservice.png',
+    title: 'SIGSERVICE Web Interfaces',
+    role: 'Frontend development',
+    description: 'Frontend interfaces built with Vue.js and TypeScript, including reusable components, REST API integration and responsive user experience improvements.',
+    image: sigserviceImage,
     url: '#',
-    technologies: ['Vue.js', 'TypeScript', 'Tailwind', 'REST API', 'GitLab CI/CD'],
+    technologies: ['Vue.js', 'TypeScript', 'Tailwind CSS', 'REST APIs', 'GitLab CI/CD'],
     featured: true,
     category: 'professional'
   },
   {
     id: 'houter',
     title: 'Template Houter',
-    description: 'Modern real estate website with smooth animations.',
-    image: '../assets/images/one.png',
+    role: 'Frontend implementation',
+    description: 'Modern real estate landing page with structured sections, smooth visual flow and responsive frontend implementation.',
+    image: houterImage,
     url: 'https://temaplate-houter.vercel.app/',
     technologies: ['Vue.js', 'Tailwind CSS', 'Vuetify'],
     featured: true,
@@ -196,8 +193,9 @@ export const projectsData: Project[] = [
   {
     id: 'dream-agency',
     title: 'Dream Agency',
-    description: 'Travel agency website with booking features.',
-    image: '/assets/images/recentWork.png',
+    role: 'Frontend website',
+    description: 'Travel agency website template with clear content structure, responsive layout and clean interface patterns.',
+    image: dreamAgencyImage,
     url: 'https://my-agency-template-ke5o.vercel.app/',
     technologies: ['Vue.js', 'CSS3', 'JavaScript'],
     featured: false,
@@ -206,15 +204,15 @@ export const projectsData: Project[] = [
   {
     id: 'antropologica',
     title: 'Antropologica',
-    description: 'Blog platform for PhD students.',
-    image: '../assets/images/blog.png',
+    role: 'Web platform',
+    description: 'Blog platform concept for academic content with focus on readable layouts and structured content presentation.',
+    image: antropologicaImage,
     url: 'https://antropologyca.vercel.app/',
-    technologies: ['Vue.js', 'REST API', 'Database Integration'],
+    technologies: ['Vue.js', 'REST APIs', 'Database Integration'],
     featured: false,
     category: 'personal'
   }
 ]
-
 
 export const navigationItems: NavigationItem[] = [
   { title: 'Home', id: 'home', icon: 'mdi-home' },
@@ -225,9 +223,8 @@ export const navigationItems: NavigationItem[] = [
   { title: 'Contact', id: 'contact', icon: 'mdi-email' }
 ]
 
-
 export const languages = [
   { name: 'Arabic', level: 'Native', proficiency: 100 },
   { name: 'French', level: 'Advanced', proficiency: 85 },
-  { name: 'English', level: 'Good', proficiency: 75 }
+  { name: 'English', level: 'Good working level', proficiency: 75 }
 ]

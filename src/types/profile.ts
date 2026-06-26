@@ -1,13 +1,16 @@
-import { type SocialLink } from "./social"
+import { type SocialLink } from './social'
+
 export interface Profile {
   name: string
   title: string
-  titles: string[] // For typewriter effect
+  titles: string[]
   bio: string
   education: string
   location: string
   image: string
   socialLinks: SocialLink[]
-  phone:string
-  email:string
+  phone: string
+  email: string
+  cvUrl: string
+  portfolioUrl: string
 }

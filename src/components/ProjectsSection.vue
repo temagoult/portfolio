@@ -1,55 +1,55 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useScrollAnimation } from '../composables/useScrollAnimation'
-import type { Project } from '../types/project'
+import type { Project, ProjectCategory } from '../types/project'
 
 interface Props {
   projects: Project[]
 }
 
+type CategoryFilter = 'all' | ProjectCategory
+
 const props = defineProps<Props>()
-const { isVisible, elementRef } = useScrollAnimation({ threshold: 0.2 })
+const { isVisible, elementRef } = useScrollAnimation({ threshold: 0.16 })
+const selectedCategory = ref<CategoryFilter>('all')
 
-const selectedCategory = ref<'all' | 'professional' | 'personal'>('all')
-
-const categories = [
-  { value: 'all', label: 'All Projects', icon: 'mdi-view-grid' },
-  { value: 'professional', label: 'Professional', icon: 'mdi-briefcase' },
-  { value: 'personal', label: 'Personal', icon: 'mdi-heart' }
+const categories: { value: CategoryFilter; label: string; icon: string }[] = [
+  { value: 'all', label: 'All Projects', icon: 'mdi-view-grid-outline' },
+  { value: 'professional', label: 'Professional', icon: 'mdi-briefcase-outline' },
+  { value: 'personal', label: 'Personal', icon: 'mdi-heart-outline' }
 ]
 
 const filteredProjects = computed(() => {
   if (selectedCategory.value === 'all') {
     return props.projects
   }
-  return props.projects.filter(p => p.category === selectedCategory.value)
+
+  return props.projects.filter(project => project.category === selectedCategory.value)
 })
 
-const featuredProjects = computed(() => 
-  filteredProjects.value.filter(p => p.featured)
-)
+const featuredProjects = computed(() => filteredProjects.value.filter(project => project.featured))
+const otherProjects = computed(() => filteredProjects.value.filter(project => !project.featured))
 
-const otherProjects = computed(() => 
-  filteredProjects.value.filter(p => !p.featured)
-)
+const selectCategory = (category: CategoryFilter) => {
+  selectedCategory.value = category
+}
 </script>
 
 <template>
   <section id="projects" class="projects-section">
     <div class="container">
-      <!-- Section Title -->
       <div class="section-title">
-        <h2>Featured Projects</h2>
-        <div class="title-underline"></div>
-        <p class="subtitle">Some of my recent work</p>
+        <span class="section-kicker">Projects</span>
+        <h2>Featured projects</h2>
+        <p>Selected work focused on frontend delivery, interface quality and practical business use cases.</p>
       </div>
 
-      <!-- Category Filter -->
-      <div class="category-filter">
+      <div class="category-filter" aria-label="Project category filter">
         <button
           v-for="category in categories"
           :key="category.value"
-          @click="selectedCategory = category.value as any"
+          type="button"
+          @click="selectCategory(category.value)"
           :class="['filter-btn', { active: selectedCategory === category.value }]"
         >
           <v-icon :icon="category.icon" size="20" />
@@ -57,76 +57,55 @@ const otherProjects = computed(() =>
         </button>
       </div>
 
-      <!-- Featured Projects Grid -->
-      <div 
-        ref="elementRef"
-        :class="['projects-grid featured', { 'is-visible': isVisible }]"
-      >
-        <div
+      <div ref="elementRef" :class="['projects-grid featured', { 'is-visible': isVisible }]">
+        <article
           v-for="(project, index) in featuredProjects"
           :key="project.id"
           class="project-card featured-card"
-          :style="{ '--delay': `${index * 0.15}s` }"
+          :style="{ '--delay': `${index * 0.12}s` }"
         >
-          <!-- Image -->
           <div class="project-image">
-            <v-img
-              :src="project.image"
-              :alt="project.title"
-              cover
-              class="image"
-            >
-              <template v-slot:placeholder>
+            <v-img :src="project.image" :alt="project.title" cover class="image">
+              <template #placeholder>
                 <div class="image-placeholder">
-                  <v-icon icon="mdi-image" size="48" />
+                  <v-icon icon="mdi-image-outline" size="44" />
                 </div>
               </template>
             </v-img>
             <div class="image-overlay">
-              <div class="overlay-content">
-                <a
-                  v-if="project.url && project.url !== '#'"
-                  :href="project.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="overlay-btn"
-                >
-                  <v-icon icon="mdi-open-in-new" />
-                  View Project
-                </a>
-                <span v-else class="overlay-text">
-                  <v-icon icon="mdi-lock" />
-                  Confidential
-                </span>
-              </div>
+              <a
+                v-if="project.url && project.url !== '#'"
+                :href="project.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="overlay-btn"
+              >
+                <v-icon icon="mdi-open-in-new" size="20" />
+                View project
+              </a>
+              <span v-else class="overlay-text">
+                <v-icon icon="mdi-lock-outline" size="20" />
+                Private project
+              </span>
             </div>
           </div>
 
-          <!-- Content -->
           <div class="project-content">
-            <div class="project-header">
-              <h3 class="project-title">{{ project.title }}</h3>
-              <v-icon 
-                v-if="project.featured" 
-                icon="mdi-star" 
-                class="featured-icon"
-              />
+            <div class="project-meta-row">
+              <span class="project-category">{{ project.category }}</span>
+              <v-icon v-if="project.featured" icon="mdi-star" class="featured-icon" size="19" />
             </div>
-            
+
+            <h3 class="project-title">{{ project.title }}</h3>
+            <p v-if="project.role" class="project-role">{{ project.role }}</p>
             <p class="project-description">{{ project.description }}</p>
 
-            <!-- Technologies -->
             <div class="tech-stack">
-              <span
-                v-for="tech in project.technologies"
-                :key="tech"
-                class="tech-badge"
-              >
+              <span v-for="tech in project.technologies" :key="tech" class="tech-badge">
                 {{ tech }}
               </span>
             </div>
 
-            <!-- Actions -->
             <div class="project-actions">
               <a
                 v-if="project.url && project.url !== '#'"
@@ -135,66 +114,61 @@ const otherProjects = computed(() =>
                 rel="noopener noreferrer"
                 class="action-btn primary"
               >
-                <v-icon icon="mdi-eye" size="18" />
-                View Live
+                <v-icon icon="mdi-eye-outline" size="18" />
+                View live
               </a>
-              <button v-else class="action-btn secondary" disabled>
-                <v-icon icon="mdi-lock" size="18" />
+              <button v-else type="button" class="action-btn secondary" disabled>
+                <v-icon icon="mdi-lock-outline" size="18" />
                 Private
               </button>
             </div>
           </div>
-        </div>
+        </article>
       </div>
 
-      <!-- Other Projects -->
       <div v-if="otherProjects.length > 0" class="other-projects">
-        <h3 class="other-title">More Projects</h3>
+        <h3>More projects</h3>
         <div class="projects-grid other">
-          <div
+          <article
             v-for="(project, index) in otherProjects"
             :key="project.id"
             class="project-card small-card"
-            :style="{ '--delay': `${(featuredProjects.length + index) * 0.15}s` }"
+            :style="{ '--delay': `${(featuredProjects.length + index) * 0.12}s` }"
           >
             <div class="small-card-content">
               <div class="small-header">
-                <v-icon icon="mdi-folder" size="32" class="folder-icon" />
+                <v-icon icon="mdi-folder-outline" size="32" class="folder-icon" />
                 <a
                   v-if="project.url && project.url !== '#'"
                   :href="project.url"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="external-link"
+                  :aria-label="`Open ${project.title}`"
                 >
                   <v-icon icon="mdi-open-in-new" size="20" />
                 </a>
               </div>
 
-              <h4 class="small-title">{{ project.title }}</h4>
+              <h4>{{ project.title }}</h4>
+              <p v-if="project.role" class="small-role">{{ project.role }}</p>
               <p class="small-description">{{ project.description }}</p>
 
               <div class="small-tech">
-                <span v-for="tech in project.technologies.slice(0, 3)" :key="tech">
+                <span v-for="tech in project.technologies.slice(0, 4)" :key="tech">
                   {{ tech }}
                 </span>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
 
-      <!-- View More -->
       <div class="view-more">
-        <a
-          href="https://github.com/temagoult"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="view-more-btn"
-        >
+        <a href="https://github.com/temagoult" target="_blank" rel="noopener noreferrer" class="view-more-btn">
           <v-icon icon="mdi-github" size="24" />
-          View More on GitHub
-          <v-icon icon="mdi-arrow-right" size="20" />
+          View more on GitHub
+          <v-icon icon="mdi-arrow-right" size="19" />
         </a>
       </div>
     </div>
@@ -203,227 +177,246 @@ const otherProjects = computed(() =>
 
 <style scoped>
 .projects-section {
-  background: #0a0a0a;
-  padding: 6rem 0;
   position: relative;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: var(--section-padding) 0;
+  background:
+    radial-gradient(circle at 14% 20%, rgba(239, 68, 68, 0.1), transparent 24rem),
+    #0a0a0a;
 }
 
 .section-title {
+  max-width: 760px;
+  margin: 0 auto 2.8rem;
   text-align: center;
-  margin-bottom: 3rem;
+}
+
+.section-kicker {
+  display: inline-flex;
+  margin-bottom: 0.85rem;
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  font-weight: 800;
+  font-size: 0.82rem;
 }
 
 .section-title h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #ef4444;
-  margin-bottom: 1rem;
+  color: white;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  font-weight: 900;
 }
 
-.title-underline {
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #ef4444, transparent);
-  margin: 0 auto 1rem;
-  border-radius: 2px;
+.section-title p {
+  margin-top: 1rem;
+  color: #a1a1aa;
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
-.subtitle {
-  color: #9ca3af;
-  font-size: 1.125rem;
-}
-
-/* Category Filter */
 .category-filter {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 3rem;
+  gap: 0.8rem;
+  margin-bottom: 2.6rem;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 2px solid rgba(239, 68, 68, 0.2);
-  border-radius: 2rem;
-  color: #9ca3af;
-  font-weight: 600;
+  padding: 0.72rem 1.05rem;
+  border-radius: 999px;
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  font-weight: 850;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, color 0.22s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  color: white;
+  border-color: rgba(239, 68, 68, 0.34);
+  background: rgba(239, 68, 68, 0.14);
 }
 
 .filter-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
 }
 
-.filter-btn.active {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border-color: #ef4444;
-}
-
-/* Projects Grid */
 .projects-grid {
   display: grid;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  gap: 1.4rem;
 }
 
 .projects-grid.featured {
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .projects-grid.other {
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* Project Card */
 .project-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 1rem;
+  position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.028));
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(28px);
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
 }
 
 .projects-grid.is-visible .project-card {
-  animation: slideUpFade 0.6s ease-out forwards;
+  animation: slideUpFade 0.55s ease-out forwards;
   animation-delay: var(--delay);
 }
 
 .project-card:hover {
-  transform: translateY(-12px);
-  border-color: rgba(239, 68, 68, 0.5);
-  box-shadow: 0 20px 40px rgba(239, 68, 68, 0.3);
+  transform: translateY(-8px);
+  border-color: rgba(239, 68, 68, 0.34);
+  box-shadow: 0 30px 76px rgba(0, 0, 0, 0.34);
 }
 
-/* Project Image */
 .project-image {
   position: relative;
-  height: 240px;
+  height: 250px;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.5);
+  background: #111;
 }
 
 .image {
-  transition: transform 0.4s ease;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease, filter 0.5s ease;
 }
 
 .project-card:hover .image {
-  transform: scale(1.1);
+  transform: scale(1.055);
+  filter: saturate(1.06);
 }
 
 .image-placeholder {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: #4b5563;
+  color: #71717a;
 }
 
 .image-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  background: rgba(0, 0, 0, 0.64);
+  transition: opacity 0.28s ease;
 }
 
 .project-card:hover .image-overlay {
   opacity: 1;
 }
 
-.overlay-content {
-  text-align: center;
+.overlay-btn,
+.overlay-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1rem;
+  border-radius: 0.95rem;
+  font-weight: 850;
 }
 
 .overlay-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #ef4444;
   color: white;
-  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
   text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.overlay-btn:hover {
-  background: #dc2626;
-  transform: scale(1.05);
 }
 
 .overlay-text {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #9ca3af;
-  font-weight: 600;
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.07);
 }
 
-/* Project Content */
 .project-content {
-  padding: 1.5rem;
+  padding: 1.35rem;
 }
 
-.project-header {
+.project-meta-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.project-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  margin: 0;
+.project-category {
+  display: inline-flex;
+  padding: 0.35rem 0.62rem;
+  border-radius: 999px;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.09);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  font-size: 0.76rem;
+  font-weight: 850;
+  text-transform: capitalize;
 }
 
 .featured-icon {
   color: #fbbf24;
 }
 
+.project-title {
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.project-role {
+  margin-top: 0.3rem;
+  color: #fca5a5;
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+
 .project-description {
-  color: #d1d5db;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  margin-top: 0.75rem;
+  color: #d4d4d8;
+  line-height: 1.65;
+}
+
+.tech-stack,
+.small-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.52rem;
 }
 
 .tech-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin: 1.15rem 0 1.25rem;
 }
 
-.tech-badge {
-  padding: 0.375rem 0.75rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 0.375rem;
-  color: #ef4444;
-  font-size: 0.75rem;
-  font-weight: 600;
+.tech-badge,
+.small-tech span {
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  color: #f4f4f5;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .project-actions {
@@ -434,124 +427,127 @@ const otherProjects = computed(() =>
 .action-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  min-height: 2.65rem;
+  padding: 0 0.9rem;
+  border-radius: 0.85rem;
+  border: 0;
+  font-weight: 850;
   text-decoration: none;
-  transition: all 0.3s ease;
   cursor: pointer;
-  border: none;
+  transition: transform 0.22s ease, background 0.22s ease;
 }
 
 .action-btn.primary {
-  background: #ef4444;
   color: white;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
 }
 
 .action-btn.primary:hover {
-  background: #dc2626;
   transform: translateY(-2px);
 }
 
 .action-btn.secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: #9ca3af;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a1a1aa;
+  background: rgba(255, 255, 255, 0.055);
   cursor: not-allowed;
 }
 
-/* Small Cards */
 .other-projects {
-  margin-top: 4rem;
+  margin-top: 3rem;
 }
 
-.other-title {
-  font-size: 1.75rem;
-  font-weight: 700;
+.other-projects h3 {
+  margin-bottom: 1.3rem;
   color: white;
-  margin-bottom: 2rem;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
   text-align: center;
 }
 
-.small-card {
-  height: 100%;
-}
-
 .small-card-content {
-  padding: 2rem;
   height: 100%;
+  padding: 1.35rem;
   display: flex;
   flex-direction: column;
 }
 
 .small-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
 }
 
-.folder-icon {
+.folder-icon,
+.external-link {
   color: #ef4444;
 }
 
 .external-link {
-  color: #9ca3af;
-  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 0.85rem;
+  background: rgba(239, 68, 68, 0.08);
+  text-decoration: none;
+  transition: transform 0.22s ease, background 0.22s ease;
 }
 
 .external-link:hover {
-  color: #ef4444;
   transform: translateY(-2px);
+  background: rgba(239, 68, 68, 0.16);
 }
 
-.small-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+.small-card h4 {
   color: white;
-  margin-bottom: 0.75rem;
+  font-size: 1.18rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.small-role {
+  margin-top: 0.2rem;
+  color: #fca5a5;
+  font-weight: 800;
+  font-size: 0.88rem;
 }
 
 .small-description {
-  color: #9ca3af;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+  color: #a1a1aa;
+  line-height: 1.6;
+  margin: 0.7rem 0 1.1rem;
   flex-grow: 1;
 }
 
-.small-tech {
-  display: flex;
-  gap: 1rem;
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-/* View More */
 .view-more {
   text-align: center;
-  margin-top: 4rem;
+  margin-top: 3rem;
 }
 
 .view-more-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  background: transparent;
-  border: 2px solid #ef4444;
-  color: #ef4444;
-  border-radius: 0.5rem;
-  font-weight: 600;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.05rem;
+  padding: 0 1.12rem;
+  border-radius: 1rem;
+  color: white;
+  border: 1px solid rgba(239, 68, 68, 0.34);
+  background: rgba(239, 68, 68, 0.08);
   text-decoration: none;
-  transition: all 0.3s ease;
+  font-weight: 850;
+  transition: transform 0.22s ease, background 0.22s ease;
 }
 
 .view-more-btn:hover {
-  background: #ef4444;
-  color: white;
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+  transform: translateY(-3px);
+  background: rgba(239, 68, 68, 0.16);
 }
 
 @keyframes slideUpFade {
@@ -561,31 +557,30 @@ const otherProjects = computed(() =>
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .projects-section {
-    padding: 4rem 0;
-  }
-
-  .section-title h2 {
-    font-size: 2rem;
-  }
-
-  .projects-grid.featured {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 900px) {
+  .projects-grid.featured,
   .projects-grid.other {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 640px) {
+  .section-title {
+    text-align: left;
+    margin-bottom: 2.2rem;
+  }
 
   .category-filter {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .filter-btn {
     justify-content: center;
+  }
+
+  .project-image {
+    height: 220px;
   }
 }
 </style>

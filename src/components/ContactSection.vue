@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useScrollAnimation } from '../composables/useScrollAnimation'
 import type { Profile } from '../types/profile'
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { isVisible, elementRef } = useScrollAnimation({ threshold: 0.2 })
+const { isVisible, elementRef } = useScrollAnimation({ threshold: 0.18 })
 
 const form = ref({
   name: '',
@@ -17,106 +17,99 @@ const form = ref({
   message: ''
 })
 
-const isSubmitting = ref(false)
-const submitStatus = ref<'idle' | 'success' | 'error'>('idle')
+const submitStatus = ref<'idle' | 'success'>('idle')
 
-const handleSubmit = async () => {
-  isSubmitting.value = true
-  
-  try {
-    // Simulate API call - Replace with your actual email service
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    submitStatus.value = 'success'
-    
-    // Reset form
-    form.value = {
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    }
-    
-    setTimeout(() => {
-      submitStatus.value = 'idle'
-    }, 5000)
-  } catch (error) {
-    submitStatus.value = 'error'
-    setTimeout(() => {
-      submitStatus.value = 'idle'
-    }, 5000)
-  } finally {
-    isSubmitting.value = false
-  }
-}
+const normalizedPhone = computed(() => props.profile.phone.replace(/[^+\d]/g, ''))
 
-const contactMethods = [
+const contactMethods = computed(() => [
   {
-    icon: 'mdi-email',
+    icon: 'mdi-email-outline',
     title: 'Email',
     value: props.profile.email,
     link: `mailto:${props.profile.email}`,
     color: '#ef4444'
   },
   {
-    icon: 'mdi-phone',
+    icon: 'mdi-phone-outline',
     title: 'Phone',
     value: props.profile.phone,
-    link: `tel:${props.profile.phone?.replace(/\s/g, '')}`,
+    link: `tel:${normalizedPhone.value}`,
     color: '#22c55e'
   },
   {
-    icon: 'mdi-map-marker',
+    icon: 'mdi-file-pdf-box',
+    title: 'CV',
+    value: 'Download Mohamed Tamagoult CV',
+    link: props.profile.cvUrl,
+    color: '#f97316',
+    download: true
+  },
+  {
+    icon: 'mdi-map-marker-outline',
     title: 'Location',
     value: props.profile.location,
-    link: '#',
+    link: '',
     color: '#3b82f6'
   }
-]
+])
+
+const handleSubmit = () => {
+  const subject = form.value.subject.trim() || 'Portfolio contact'
+  const body = [
+    `Name: ${form.value.name}`,
+    `Email: ${form.value.email}`,
+    '',
+    form.value.message
+  ].join('\n')
+
+  window.location.href = `mailto:${props.profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  submitStatus.value = 'success'
+
+  window.setTimeout(() => {
+    submitStatus.value = 'idle'
+  }, 4500)
+}
 </script>
 
 <template>
   <section id="contact" class="contact-section">
     <div class="container">
-      <!-- Section Title -->
       <div class="section-title">
-        <h2>Get In Touch</h2>
-        <div class="title-underline"></div>
-        <p class="subtitle">Let's work together on your next project</p>
+        <span class="section-kicker">Contact</span>
+        <h2>Let us discuss the opportunity</h2>
+        <p>For recruitment, frontend roles or project discussions, email is the fastest way to reach me.</p>
       </div>
 
-      <div 
-        ref="elementRef"
-        :class="['contact-wrapper', { 'is-visible': isVisible }]"
-      >
-        <!-- Contact Info -->
-        <div class="contact-info">
+      <div ref="elementRef" :class="['contact-wrapper', { 'is-visible': isVisible }]">
+        <aside class="contact-info">
           <div class="info-header">
-            <h3>Contact Information</h3>
-            <p>Feel free to reach out through any of these channels</p>
+            <h3>Contact information</h3>
+            <p>All important links are available here, including direct access to my latest CV.</p>
           </div>
 
           <div class="contact-methods">
             <a
               v-for="method in contactMethods"
               :key="method.title"
-              :href="method.link"
-              :class="['contact-method', { 'not-link': method.link === '#' }]"
+              :href="method.link || undefined"
+              :download="method.download || undefined"
+              :class="['contact-method', { 'not-link': !method.link }]"
               :style="{ '--method-color': method.color }"
+              :target="method.title === 'CV' ? '_blank' : undefined"
+              :rel="method.title === 'CV' ? 'noopener noreferrer' : undefined"
             >
-              <div class="method-icon">
+              <span class="method-icon">
                 <v-icon :icon="method.icon" size="24" />
-              </div>
-              <div class="method-content">
+              </span>
+              <span class="method-content">
                 <span class="method-title">{{ method.title }}</span>
                 <span class="method-value">{{ method.value }}</span>
-              </div>
+              </span>
             </a>
           </div>
 
-          <!-- Social Links -->
-          <div class="social-links">
-            <h4>Follow Me</h4>
+          <div class="social-panel">
+            <h4>Professional links</h4>
             <div class="social-icons">
               <a
                 v-for="social in profile.socialLinks"
@@ -133,102 +126,59 @@ const contactMethods = [
             </div>
           </div>
 
-          <!-- Languages -->
-          <div class="languages-section">
+          <div class="languages-panel">
             <h4>Languages</h4>
             <div class="languages">
               <div class="language">
                 <span>Arabic</span>
-                <span class="level">Native</span>
+                <strong>Native</strong>
               </div>
               <div class="language">
                 <span>French</span>
-                <span class="level">Advanced</span>
+                <strong>Advanced</strong>
               </div>
               <div class="language">
                 <span>English</span>
-                <span class="level">Good</span>
+                <strong>Good working level</strong>
               </div>
             </div>
           </div>
-        </div>
+        </aside>
 
-        <!-- Contact Form -->
-        <div class="contact-form">
-          <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-              <label for="name">Your Name</label>
-              <input
-                id="name"
-                v-model="form.name"
-                type="text"
-                placeholder="John Doe"
-                required
-              />
-            </div>
+        <div class="contact-form-card">
+          <form @submit.prevent="handleSubmit" class="contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Your name</label>
+                <input id="name" v-model="form.name" type="text" placeholder="Your name" required />
+              </div>
 
-            <div class="form-group">
-              <label for="email">Your Email</label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                placeholder="john@example.com"
-                required
-              />
+              <div class="form-group">
+                <label for="email">Your email</label>
+                <input id="email" v-model="form.email" type="email" placeholder="name@company.com" required />
+              </div>
             </div>
 
             <div class="form-group">
               <label for="subject">Subject</label>
-              <input
-                id="subject"
-                v-model="form.subject"
-                type="text"
-                placeholder="Project Inquiry"
-                required
-              />
+              <input id="subject" v-model="form.subject" type="text" placeholder="Frontend opportunity" required />
             </div>
 
             <div class="form-group">
               <label for="message">Message</label>
-              <textarea
-                id="message"
-                v-model="form.message"
-                rows="6"
-                placeholder="Tell me about your project..."
-                required
-              ></textarea>
+              <textarea id="message" v-model="form.message" rows="7" placeholder="Tell me about the role, project or next step." required></textarea>
             </div>
 
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              class="submit-btn"
-              :disabled="isSubmitting"
-            >
-              <span v-if="!isSubmitting">
-                <v-icon icon="mdi-send" size="20" />
-                Send Message
-              </span>
-              <span v-else>
-                <v-icon icon="mdi-loading" size="20" class="spinning" />
-                Sending...
-              </span>
+            <button type="submit" class="submit-btn">
+              <v-icon icon="mdi-email-send-outline" size="20" />
+              Open email client
             </button>
 
-            <!-- Status Messages -->
             <transition name="fade">
-              <div v-if="submitStatus === 'success'" class="status-message success">
-                <v-icon icon="mdi-check-circle" size="20" />
-                Message sent successfully! I'll get back to you soon.
-              </div>
-            </transition>
-
-            <transition name="fade">
-              <div v-if="submitStatus === 'error'" class="status-message error">
-                <v-icon icon="mdi-alert-circle" size="20" />
-                Failed to send message. Please try again or contact me directly.
-              </div>
+              <p v-if="submitStatus === 'success'" class="status-message">
+                <v-icon icon="mdi-check-circle-outline" size="20" />
+                Your email client has been opened with the message prepared.
+              </p>
             </transition>
           </form>
         </div>
@@ -239,50 +189,53 @@ const contactMethods = [
 
 <style scoped>
 .contact-section {
-  background: linear-gradient(180deg, #0a0a0a 0%, #1a0000 100%);
-  padding: 6rem 0;
   position: relative;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: var(--section-padding) 0;
+  background:
+    radial-gradient(circle at 85% 16%, rgba(239, 68, 68, 0.12), transparent 26rem),
+    linear-gradient(180deg, #090909 0%, #120505 100%);
 }
 
 .section-title {
+  max-width: 760px;
+  margin: 0 auto 3.5rem;
   text-align: center;
-  margin-bottom: 4rem;
+}
+
+.section-kicker {
+  display: inline-flex;
+  margin-bottom: 0.85rem;
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  font-weight: 800;
+  font-size: 0.82rem;
 }
 
 .section-title h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #ef4444;
-  margin-bottom: 1rem;
+  color: white;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  font-weight: 900;
 }
 
-.title-underline {
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #ef4444, transparent);
-  margin: 0 auto 1rem;
-  border-radius: 2px;
+.section-title p {
+  margin-top: 1rem;
+  color: #a1a1aa;
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
-.subtitle {
-  color: #9ca3af;
-  font-size: 1.125rem;
-}
-
-/* Contact Wrapper */
 .contact-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 3rem;
+  grid-template-columns: 0.92fr 1.08fr;
+  gap: 1.5rem;
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
 }
 
 .contact-wrapper.is-visible {
@@ -290,281 +243,267 @@ const contactMethods = [
   transform: translateY(0);
 }
 
-/* Contact Info */
+.contact-info,
+.contact-form-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.028));
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.22);
+  border-radius: 1.55rem;
+  backdrop-filter: blur(14px);
+}
+
 .contact-info {
+  padding: 1.35rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.35rem;
 }
 
 .info-header h3 {
-  font-size: 1.75rem;
-  font-weight: 700;
   color: white;
-  margin-bottom: 0.5rem;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.4rem;
 }
 
 .info-header p {
-  color: #9ca3af;
-  line-height: 1.6;
+  color: #a1a1aa;
+  line-height: 1.65;
 }
 
 .contact-methods {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  gap: 0.8rem;
 }
 
 .contact-method {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 0.75rem;
+  gap: 0.9rem;
+  padding: 0.95rem;
+  border-radius: 1.1rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: transform 0.24s ease, border-color 0.24s ease, background 0.24s ease;
 }
 
 .contact-method:not(.not-link):hover {
-  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.065);
   border-color: var(--method-color);
-  transform: translateX(8px);
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
+}
+
+.contact-method.not-link {
+  cursor: default;
 }
 
 .method-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
+  border-radius: 0.95rem;
   color: var(--method-color);
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .method-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
 }
 
 .method-title {
-  font-size: 0.875rem;
-  color: #9ca3af;
-  font-weight: 500;
+  color: #a1a1aa;
+  font-size: 0.84rem;
+  font-weight: 800;
 }
 
 .method-value {
-  font-size: 1rem;
   color: white;
-  font-weight: 600;
+  font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
-/* Social Links */
-.social-links h4 {
-  font-size: 1.125rem;
-  font-weight: 600;
+.social-panel h4,
+.languages-panel h4 {
   color: white;
-  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin-bottom: 0.85rem;
 }
 
 .social-icons {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .social-link {
-  width: 48px;
-  height: 48px;
-  display: flex;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   color: white;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: transform 0.24s ease, background 0.24s ease, border-color 0.24s ease;
 }
 
 .social-link:hover {
+  transform: translateY(-4px);
   background: var(--social-color);
   border-color: var(--social-color);
-  transform: translateY(-4px) rotate(5deg);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Languages */
-.languages-section h4 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 1rem;
 }
 
 .languages {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  gap: 0.65rem;
 }
 
 .language {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 0.5rem;
-  color: #d1d5db;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.78rem 0.9rem;
+  border-radius: 0.95rem;
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.language .level {
-  color: #ef4444;
-  font-weight: 600;
-  font-size: 0.875rem;
+.language strong {
+  color: #fca5a5;
+  font-size: 0.86rem;
 }
 
-/* Contact Form */
+.contact-form-card {
+  padding: 1.35rem;
+}
+
 .contact-form {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 1rem;
-  padding: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  display: grid;
+  gap: 0.45rem;
 }
 
 .form-group label {
-  display: block;
   color: white;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-weight: 850;
+  font-size: 0.92rem;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 0.875rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
   color: white;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  padding: 0.92rem 1rem;
+  transition: border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #ef4444;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+.form-group textarea {
+  min-height: 174px;
+  resize: vertical;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #6b7280;
+  color: #71717a;
 }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 150px;
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: rgba(239, 68, 68, 0.55);
+  background: rgba(255, 255, 255, 0.075);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
 .submit-btn {
-  width: 100%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 3.15rem;
+  border: 0;
+  border-radius: 1rem;
   color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 18px 38px rgba(239, 68, 68, 0.2);
+  font-weight: 900;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
 }
 
-.submit-btn:hover:not(:disabled) {
+.submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-}
-
-.submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.spinning {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  box-shadow: 0 22px 46px rgba(239, 68, 68, 0.3);
 }
 
 .status-message {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-top: 1rem;
-  font-weight: 500;
-}
-
-.status-message.success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #22c55e;
-}
-
-.status-message.error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #ef4444;
+  gap: 0.55rem;
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 0.95rem;
+  padding: 0.85rem 0.95rem;
+  font-weight: 800;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.24s ease, transform 0.24s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  transform: translateY(6px);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .contact-section {
-    padding: 4rem 0;
-  }
-
-  .section-title h2 {
-    font-size: 2rem;
-  }
-
+@media (max-width: 920px) {
   .contact-wrapper {
     grid-template-columns: 1fr;
-    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .section-title {
+    text-align: left;
+    margin-bottom: 2.4rem;
   }
 
-  .contact-form {
-    padding: 1.5rem;
+  .form-row {
+    grid-template-columns: 1fr;
   }
 
-  .social-icons {
-    flex-wrap: wrap;
+  .contact-info,
+  .contact-form-card {
+    padding: 1rem;
   }
 }
 </style>

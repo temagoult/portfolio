@@ -12,9 +12,9 @@ export default createVuetify({
           primary: '#ef4444',
           secondary: '#dc2626',
           background: '#000000',
-          surface: '#0a0a0a',
-        },
-      },
-    },
-  },
+          surface: '#0a0a0a'
+        }
+      }
+    }
+  }
 })

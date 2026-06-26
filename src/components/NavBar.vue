@@ -6,10 +6,12 @@ import type { NavigationItem } from '../types/navigation'
 interface Props {
   items: NavigationItem[]
   title?: string
+  cvUrl?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: 'Mohamed Tamagoult'
+  title: 'Mohamed Tamagoult',
+  cvUrl: '/cv/Mohamed_Tamagoult_CV.pdf'
 })
 
 const { scrollToSection } = useNavigation()
@@ -18,15 +20,14 @@ const isScrolled = ref(false)
 const activeSection = ref('home')
 
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 50
+  isScrolled.value = window.scrollY > 40
 
-  // Update active section based on scroll position
   const sections = props.items.map(item => ({
     id: item.id,
     element: document.getElementById(item.id)
   }))
 
-  const scrollPosition = window.scrollY + 100
+  const scrollPosition = window.scrollY + 120
 
   for (const section of sections) {
     if (section.element) {
@@ -50,7 +51,7 @@ const closeMobileMenu = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', handleScroll, { passive: true })
   handleScroll()
 })
 
@@ -60,33 +61,38 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <nav :class="['navbar', { 'scrolled': isScrolled }]">
+  <nav :class="['navbar', { scrolled: isScrolled }]">
     <div class="nav-container">
-      <!-- Logo/Title -->
-      <div class="nav-brand" @click="handleNavClick('home')">
+      <button type="button" class="nav-brand" @click="handleNavClick('home')" aria-label="Go to home">
+        <span class="brand-mark">MT</span>
         <span class="brand-text">{{ title }}</span>
-        <span class="brand-dot">.</span>
-      </div>
+      </button>
 
-      <!-- Desktop Navigation -->
       <div class="nav-menu desktop">
         <button
           v-for="item in items"
           :key="item.id"
+          type="button"
           @click="handleNavClick(item.id)"
-          :class="['nav-link', { 'active': activeSection === item.id }]"
+          :class="['nav-link', { active: activeSection === item.id }]"
         >
-          <v-icon v-if="item.icon" :icon="item.icon" size="18" />
+          <v-icon v-if="item.icon" :icon="item.icon" size="17" />
           <span>{{ item.title }}</span>
         </button>
       </div>
 
-      <!-- Mobile Menu Button -->
-      <button 
+      <a :href="cvUrl" class="nav-cv desktop-cv" download>
+        CV
+        <v-icon icon="mdi-download" size="17" />
+      </a>
+
+      <button
         class="mobile-menu-btn"
+        type="button"
         @click="mobileMenuOpen = !mobileMenuOpen"
-        :class="{ 'open': mobileMenuOpen }"
+        :class="{ open: mobileMenuOpen }"
         aria-label="Toggle menu"
+        :aria-expanded="mobileMenuOpen"
       >
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -94,7 +100,6 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <!-- Mobile Navigation -->
     <transition name="mobile-menu">
       <div v-if="mobileMenuOpen" class="mobile-menu">
         <div class="mobile-menu-overlay" @click="closeMobileMenu"></div>
@@ -102,12 +107,17 @@ onUnmounted(() => {
           <button
             v-for="item in items"
             :key="item.id"
+            type="button"
             @click="handleNavClick(item.id)"
-            :class="['mobile-nav-link', { 'active': activeSection === item.id }]"
+            :class="['mobile-nav-link', { active: activeSection === item.id }]"
           >
-            <v-icon v-if="item.icon" :icon="item.icon" size="24" />
+            <v-icon v-if="item.icon" :icon="item.icon" size="22" />
             <span>{{ item.title }}</span>
           </button>
+          <a :href="cvUrl" class="mobile-cv" download @click="closeMobileMenu">
+            <v-icon icon="mdi-download" size="22" />
+            Download CV
+          </a>
         </div>
       </div>
     </transition>
@@ -121,129 +131,143 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  background: rgba(5, 5, 8, 0.56);
+  backdrop-filter: blur(18px);
+  transition: all 0.25s ease;
   border-bottom: 1px solid transparent;
 }
 
 .navbar.scrolled {
-  background: rgba(0, 0, 0, 0.95);
-  border-bottom-color: rgba(239, 68, 68, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  background: rgba(5, 5, 8, 0.88);
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
 }
 
 .nav-container {
-  max-width: 1400px;
+  max-width: 1380px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
-/* Brand */
 .nav-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 1.5rem;
-  font-weight: 700;
+  gap: 0.65rem;
+  background: transparent;
+  border: none;
   color: white;
   cursor: pointer;
-  transition: all 0.3s ease;
   user-select: none;
 }
 
-.nav-brand:hover {
-  color: #ef4444;
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  color: white;
+  background: linear-gradient(135deg, var(--color-primary), #991b1b);
+  font-size: 0.92rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  box-shadow: var(--shadow-accent);
 }
 
 .brand-text {
-  background: linear-gradient(135deg, #ffffff 0%, #ef4444 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
 }
 
-.brand-dot {
-  color: #ef4444;
-  font-size: 2rem;
-  line-height: 1;
-}
-
-/* Desktop Menu */
 .nav-menu.desktop {
   display: none;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .nav-menu.desktop {
     display: flex;
   }
 }
 
 .nav-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  gap: 0.45rem;
+  padding: 0.62rem 0.86rem;
   background: transparent;
   border: none;
-  border-radius: 0.5rem;
-  color: #d1d5db;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 999px;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.25s ease;
 }
 
-.nav-link::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: #ef4444;
-  transform: translateX(-50%);
-  transition: width 0.3s ease;
-}
-
-.nav-link:hover {
-  color: white;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.nav-link:hover::before {
-  width: 80%;
-}
-
+.nav-link:hover,
 .nav-link.active {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.15);
+  color: white;
+  background: rgba(239, 68, 68, 0.14);
 }
 
-.nav-link.active::before {
-  width: 80%;
+.nav-cv,
+.mobile-cv {
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  font-weight: 900;
+  color: white;
+  border: 1px solid var(--color-border-accent);
+  background: rgba(239, 68, 68, 0.11);
+  transition: all 0.25s ease;
 }
 
-/* Mobile Menu Button */
+.nav-cv {
+  display: none;
+  min-height: 42px;
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+}
+
+.nav-cv:hover,
+.mobile-cv:hover {
+  background: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+@media (min-width: 900px) {
+  .desktop-cv {
+    display: inline-flex;
+  }
+}
+
 .mobile-menu-btn {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
-  padding: 0.5rem;
-  background: transparent;
-  border: none;
+  gap: 0.34rem;
+  padding: 0.58rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: 0.8rem;
   cursor: pointer;
   z-index: 1001;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .mobile-menu-btn {
     display: none;
   }
@@ -254,12 +278,12 @@ onUnmounted(() => {
   height: 2px;
   background: white;
   border-radius: 2px;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .mobile-menu-btn.open .hamburger-line:nth-child(1) {
-  transform: rotate(45deg) translateY(9px);
-  background: #ef4444;
+  transform: rotate(45deg) translateY(8px);
+  background: var(--color-primary);
 }
 
 .mobile-menu-btn.open .hamburger-line:nth-child(2) {
@@ -267,11 +291,10 @@ onUnmounted(() => {
 }
 
 .mobile-menu-btn.open .hamburger-line:nth-child(3) {
-  transform: rotate(-45deg) translateY(-9px);
-  background: #ef4444;
+  transform: rotate(-45deg) translateY(-8px);
+  background: var(--color-primary);
 }
 
-/* Mobile Menu */
 .mobile-menu {
   position: fixed;
   inset: 0;
@@ -282,67 +305,65 @@ onUnmounted(() => {
 .mobile-menu-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
 }
 
 .mobile-menu-content {
   position: relative;
   margin-left: auto;
-  width: 280px;
+  width: min(86vw, 320px);
   height: 100vh;
-  background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 100%);
-  border-left: 1px solid rgba(239, 68, 68, 0.2);
-  padding: 6rem 2rem 2rem;
+  padding: 6rem 1.25rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.65rem;
+  background: linear-gradient(145deg, rgba(22, 7, 9, 0.98) 0%, rgba(5, 5, 8, 0.98) 100%);
+  border-left: 1px solid var(--color-border-accent);
   overflow-y: auto;
 }
 
-.mobile-nav-link {
+.mobile-nav-link,
+.mobile-cv {
   display: flex;
+  width: 100%;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 0.75rem;
-  color: #d1d5db;
-  font-size: 1.125rem;
-  font-weight: 500;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--color-border);
+  font-weight: 850;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   text-align: left;
 }
 
-.mobile-nav-link:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
-  color: white;
-  transform: translateX(-4px);
-}
-
+.mobile-nav-link:hover,
 .mobile-nav-link.active {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.14);
+  border-color: var(--color-border-accent);
+  color: white;
 }
 
-/* Mobile Menu Transitions */
+.mobile-cv {
+  margin-top: 0.4rem;
+}
+
 .mobile-menu-enter-active,
 .mobile-menu-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .mobile-menu-enter-active .mobile-menu-overlay,
 .mobile-menu-leave-active .mobile-menu-overlay {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .mobile-menu-enter-active .mobile-menu-content,
 .mobile-menu-leave-active .mobile-menu-content {
-  transition: transform 0.3s ease;
+  transition: transform 0.25s ease;
 }
 
 .mobile-menu-enter-from .mobile-menu-overlay,
@@ -355,21 +376,9 @@ onUnmounted(() => {
   transform: translateX(100%);
 }
 
-/* Scrollbar for mobile menu */
-.mobile-menu-content::-webkit-scrollbar {
-  width: 4px;
-}
-
-.mobile-menu-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.mobile-menu-content::-webkit-scrollbar-thumb {
-  background: rgba(239, 68, 68, 0.5);
-  border-radius: 2px;
-}
-
-.mobile-menu-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(239, 68, 68, 0.7);
+@media (max-width: 480px) {
+  .brand-text {
+    display: none;
+  }
 }
 </style>

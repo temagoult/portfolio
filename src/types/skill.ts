@@ -1,7 +1,9 @@
+export type SkillCategory = 'frontend' | 'uiux' | 'tools' | 'backend' | 'database'
+
 export interface Skill {
   id: string
   name: string
   icon: string
-  category: 'frontend' | 'backend' | 'language' | 'framework'
+  category: SkillCategory
   proficiency?: number
 }

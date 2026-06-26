@@ -18,4 +18,5 @@ export function useTheme() {
     isDark,
     toggleTheme,
     themeColors
-  }}
+  }
+}
